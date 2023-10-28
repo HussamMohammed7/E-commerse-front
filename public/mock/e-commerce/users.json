@@ -22,5 +22,14 @@
     "email": "david.johnson@example.com",
     "password": "hashed_password",
     "role": "visitor"
+  },
+  {
+    "id": 4,
+    "firstName": "Hussam",
+    "lastName": "Mohamed",
+    "email": "Hussam.Mohammed@example.com",
+    "password": "hussam_password",
+    "role": "admin"
   }
+  
 ]

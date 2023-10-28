@@ -12,7 +12,8 @@ const initialProductState: Product = {
   description: '',
   categories: [],
   variants: [],
-  sizes: []
+  sizes: [],
+  price: 0,
 }
 
 export function NewProductWrapper() {
