@@ -3,17 +3,19 @@ import { HiMenuAlt3 } from "react-icons/hi";
 import { MdLocalGroceryStore, MdOutlineDashboard, MdOutlineLocalGroceryStore } from "react-icons/md";
 import { RiSettings4Line } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
-import { AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineUser, AiOutlineHeart, AiOutlineHistory } from "react-icons/ai";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 export default function AdminSideBar() {
     const menus = [
-        { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-        { name: "Users", link: "/Admin/AdminUsers", icon: AiOutlineUser },
-        { name: "Products", link: "/Admin/AdminProduct", icon: MdOutlineLocalGroceryStore },
-        { name: "messages", link: "/", icon: FiMessageSquare },
-        { name: "Setting", link: "/", icon: RiSettings4Line },
+        // { name: "dashboard", link: "/", icon: MdOutlineDashboard },
+        { name: "Users", link: "/admin/admin-users", icon: AiOutlineUser },
+        { name: "Products", link: "/admin/admin-product", icon: MdOutlineLocalGroceryStore },
+        { name: "Orders", link: "/admin/admin-order", icon: AiOutlineHistory },
+
+        // { name: "messages", link: "/", icon: FiMessageSquare },
+        // { name: "Setting", link: "/", icon: RiSettings4Line },
       ];
       const [open, setOpen] = useState(false);
       return (

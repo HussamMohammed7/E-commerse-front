@@ -10,6 +10,11 @@ import Cart from './components/Cart'
 import Admin from './AdminPage/Admin'
 import AdminProduct from './AdminPage/AdminProduct'
 import AdminUsers from './AdminPage/AdminUsers'
+import Login from './Login&Register/Login'
+import Register from './Login&Register/Register'
+import AdminOrder from './AdminPage/AdminOrder'
+import { NewProductWrapper } from './components/NewProductWrapper'
+import Profile from './components/Profile'
 
 function App() {
   return (
@@ -20,18 +25,33 @@ function App() {
       <Routes>
         <Route path="/" element={ <Home/> } />
         <Route path="products" element={ <Products/> } />
-        <Route path="AboutUs" element={ <AboutUs/> } />
-        <Route path="ProductsManager" element={ <ProductsManager/> } />
-        <Route path="Cart" element={ <Cart/> } />
+        <Route path="about-us" element={ <AboutUs/> } />
+        <Route path="products-manager" element={ <ProductsManager/> } />
+        <Route path="cart" element={ <Cart/> } />
+
+        <Route path="login" element={ <Login/> } />
+        <Route path="/login/register" element={ <Register/> } />
+        <Route path="profile" element={ <Profile/> } />
 
 
-        <Route path="Admin" element={ <Admin/> } />
-        <Route path="Admin/AdminProduct" element={ <AdminProduct/> } />
-        <Route path="Admin/AdminUsers" element={ <AdminUsers/> } />
 
 
 
-        <Route path="products/ProductDetail/:productId" element={<ProductDetail />} />
+
+        <Route path="admin" element={ <Admin/> } />
+        <Route path="admin/admin-product" element={ <AdminProduct/> } />
+        <Route path="admin/admin-product/new-product" element={ <NewProductWrapper/> } />
+
+        <Route path="admin/admin-users" element={ <AdminUsers/> } />
+        <Route path="admin/admin-order" element={ <AdminOrder/> } />
+        
+
+
+        
+
+
+
+        <Route path="products/product-detail/:productId" element={<ProductDetail />} />
 
         
       </Routes>

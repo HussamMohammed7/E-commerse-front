@@ -41,9 +41,18 @@ export const userSlice = createSlice({
     removeProduct: (state, action: { payload: { productId: number } }) => {
       const filteredItems = state.items.filter((product) => product.id !== action.payload.productId)
       state.items = filteredItems
-    }
+    },
+    updateProduct: (state, action) => {
+      const { productId, updatedProduct } = action.payload;
+      const productToUpdate = state.items.find((product) => product.id === productId);
+      if (productToUpdate) {
+        // Update the product details with the provided data
+        Object.assign(productToUpdate, updatedProduct);
+      }
+    },
+
   }
 })
-export const { removeProduct, addProduct, productsRequest, productsSuccess } = userSlice.actions
+export const { removeProduct, addProduct, productsRequest, productsSuccess,updateProduct } = userSlice.actions
 
 export default userSlice.reducer

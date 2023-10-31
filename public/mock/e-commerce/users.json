@@ -30,6 +30,23 @@
     "email": "Hussam.Mohammed@example.com",
     "password": "hussam_password",
     "role": "admin"
+  },
+  {
+    "id": 5,
+    "firstName": "Hussam",
+    "lastName": "Mohamed",
+    "email": "a@a.com",
+    "password": "a",
+    "role": "admin"
+  },
+  {
+    "id": 5,
+    "firstName": "ali",
+    "lastName": "Mohamed",
+    "email": "v@v.com",
+    "password": "v",
+    "role": "visitor"
   }
+  
   
 ]
