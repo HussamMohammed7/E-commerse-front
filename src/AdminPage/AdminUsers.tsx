@@ -8,7 +8,6 @@ import EditUser from './EditUser';
 import { AiOutlineClose } from 'react-icons/ai';
 import api from '../api';
 import { ConfirmDialog } from 'primereact/confirmdialog'; // To use <ConfirmDialog> tag
-import { confirmDialog } from 'primereact/confirmdialog'; // To use confirmDialog method
 
 
 interface Users {

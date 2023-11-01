@@ -55,8 +55,8 @@ const navigate = useNavigate()
 
 
   return (
-    <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
-      <div className="w-full p-6 m-auto rounded-md shadow-md lg.max-w-xl text-left bg-neutral-700">
+    <div className="bg-gif  relative flex flex-col justify-center min-h-screen overflow-hidden ">
+      <div className="w-1/2 p-6 m-auto rounded-md shadow-md lg.max-w-xl text-left bg-neutral-700 ">
         <h1 className="text-3xl font-semibold text-purple-400">Sign in</h1>
         <form onSubmit={handleLogin} className="mt-6">
           <div className="mb-2">

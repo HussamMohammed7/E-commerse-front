@@ -14,7 +14,8 @@ import Login from './Login&Register/Login'
 import Register from './Login&Register/Register'
 import AdminOrder from './AdminPage/AdminOrder'
 import { NewProductWrapper } from './components/NewProductWrapper'
-import Profile from './components/Profile'
+import Profile from './Profile/Profile'
+import ProfileOrder from './Profile/ProfileOrder'
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
         <Route path="login" element={ <Login/> } />
         <Route path="/login/register" element={ <Register/> } />
         <Route path="profile" element={ <Profile/> } />
+        <Route path="profile/profile-order" element={ <ProfileOrder/> } />
+
 
 
 

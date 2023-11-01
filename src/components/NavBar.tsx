@@ -10,7 +10,7 @@ export default function NavBar() {
   console.log(user);
 
   return (
-    <div className="z-10 text-white p-4 fixed top-0 w-full pt-3 bg-[#0e0e0e]">
+    <div className="z-10 text-white p-4 fixed top-0 w-full pt-3 bg-[#000000]">
       <nav className="container mx-auto flex justify-between items-center mt-3 mb-3">
         <span className="text-3xl font-bold">
           <img src="src\components\cable.png" alt="" className="h-6 w-8 inline relative mr-1" /> Cable master

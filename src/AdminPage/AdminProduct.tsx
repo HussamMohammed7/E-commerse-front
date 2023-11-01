@@ -210,9 +210,13 @@ export default function AdminProduct() {
           </select>
           <span
            onClick={openNewProductForm} // Open the new product form when the button is clicked
-           className='rounded p-4 ml-2 pr-[6.4rem] pl-[6.4rem]
+           className='rounded p-2 ml-2 
           
-           cursor-pointer hover:text-[#530296]'>Add User</span>
+           cursor-pointer hover:text-[#530296]'>Add Product</span>
+             <span
+           className='rounded p-2 ml-2 
+          
+           cursor-pointer hover:text-[#530296]'>Add New Category</span>
         </div>
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
