@@ -34,6 +34,7 @@ export default function AdminUsers() {
   const showConfirmDialog = (userId: number) => {
     setConfirmDialogVisible(true);
     setSelectedUserId(userId);
+    
 
   };
   
@@ -138,7 +139,10 @@ export default function AdminUsers() {
                         <td >
                         <ConfirmDialog
         visible={confirmDialogVisible}
-        onHide={() => setConfirmDialogVisible(false)}
+        onHide={() => {
+          setSelectedUserId(null); // Reset selectedUserId when the dialog is hidden
+          setConfirmDialogVisible(false);
+        }}
         message="Are you sure you want to Delete this user?"
         header="Confirmation" 
         headerClassName='font-bold'

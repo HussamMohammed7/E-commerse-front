@@ -31,14 +31,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   
 
   return (
-    <div className=" p-4 " > {/* Set width to 1/3 for three cards in a row and add padding */}
+    <div className=" p-6 " > {/* Set width to 1/3 for three cards in a row and add padding */}
       <div className="h-[32rem] mb-[4rem] bg-whiterBlack shadow-lg p-4 rounded-md" > {/* Card container */}
         <img src={product.image} alt={product.name} className="w-full h-[20rem] rounded-md " />
         
         <Link to={`product-detail/${product.id}`}>
-        <h3 className="text-xl font-semibold mt-2 cursor-pointer hover:text-blue-600">{product.name}</h3>
+        <h3 className="text-xl font-semibold mt-4 cursor-pointer hover:text-blue-600 ">{product.name}</h3>
         </Link>
-        <p className="text-gray-600 " >{product.description}</p>
+        <p className="text-[#fbfbfb] mt-2" >{product.description}</p>
         <div className="flex items-center justify-between mt-4">
                 
         <h3 className="text-xl font-semibold ml-[4rem] ">{product.price} SR</h3>
