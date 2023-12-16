@@ -1,7 +1,13 @@
 import jwt_decode from 'jwt-decode'
 
 import { isDecodedUser } from '../types/type-guards'
-import { User } from '../redux/slices/products/productSlice'
+import { User } from '../redux/slices/userSlice'
+
+interface UserDecoded {
+  _id: String
+  email: string
+  role: string
+}
 
 export function getDecodedTokenFromStorage() {
   const token = localStorage.getItem('token')
@@ -9,15 +15,17 @@ export function getDecodedTokenFromStorage() {
 
   try {
     const decodedUser = jwt_decode(token)
-    if (!isDecodedUser(decodedUser)) return null
 
-    const user: User = {
-      username: decodedUser.username,
-      id: decodedUser.user_id,
-      role: decodedUser.role
+    if (isDecodedUser(decodedUser)) {
+      const user: UserDecoded = {
+        email: decodedUser.email,
+        _id: decodedUser._id,
+        role: decodedUser.role
+      }
+      console.log(user)
+      return user
     }
-
-    return user
+    return null
   } catch (error) {
     return null
   }
@@ -28,4 +36,7 @@ export function getTokenFromStorage() {
   if (!token) return null
 
   return token
+}
+export function setTokenToStorage(token: string): void {
+  localStorage.setItem('token', token)
 }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const ImageSlider = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
-    'https://www.sentinelone.com/wp-content/uploads/2019/07/7-ways-hackers-steal-passwords-header.png',
+    'https://png.pngtree.com/background/20230527/original/pngtree-the-usb-usb3-cable-is-purple-picture-image_2763227.jpg',
+    'https://cdn.hyprop.co.za/image/2023/4/21/8a94f4de-74d3-4e2e-9364-d620caad1fc6/a6c67ee5-317b-4131-a3e1-9f452ab58451.jpg',
     'https://c0.wallpaperflare.com/preview/935/149/224/computer-hardware-electronics-computer-hardware.jpg',
     'https://w0.peakpx.com/wallpaper/582/836/HD-wallpaper-darkbluekeyboard-computer-dark-darkishblue-gamer-keyboard-life-neon-phone-purple.jpg'
   ];
@@ -20,6 +22,7 @@ const ImageSlider = () => {
     };
   }, [currentImageIndex]);
 
+ 
   const currentImage = images[currentImageIndex];
 
   return (

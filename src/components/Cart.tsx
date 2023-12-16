@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { addToCart, removeFromCart, increaseQuantity, decreaseQuantity } from '../redux/slices/products/cartSlice';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 type Product = {
   id: number;
@@ -17,6 +19,31 @@ type Product = {
 export default function Cart() {
   const state = useSelector((state: RootState) => state);
   const cartItems = state.cart.items;
+  const user = state.user.user;  
+  
+  const navigate = useNavigate();
+  console.log("user",user)
+  
+ useEffect(() => {
+
+  if(!user){
+    // Handle case when user is not logged in
+    toast.error("You need to sign in first ", {
+      position: 'top-right',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark'
+    })
+
+    navigate('/login');
+
+ }
+},  [navigate]);
+
 
   const dispatch = useDispatch();
 
@@ -42,7 +69,7 @@ export default function Cart() {
 
   return (
     <div className="h-screen bg-blackTheme pt-20 mt-9 ">
-      <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
+      <h1 className="mt-10 mb-10 text-center text-2xl font-bold">Cart Items</h1>
       {cartItems.length > 0 ? (
         <div className="mx-auto max-w-5xl justify-center px-6 xl:px-0 ml-[10rem] ">
           {cartItems.map((item) => (

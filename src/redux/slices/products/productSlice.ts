@@ -1,7 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import api from '../../../api'
+import { AxiosError } from 'axios'
 
 export type Product = {
-  id: number
+  _id: number
   name: string
   image: string
   description: string
@@ -23,6 +25,7 @@ const initialState: ProductState = {
   isLoading: false
 }
 
+
 export const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -39,12 +42,12 @@ export const userSlice = createSlice({
       state.items = [action.payload.product, ...state.items]
     },
     removeProduct: (state, action: { payload: { productId: number } }) => {
-      const filteredItems = state.items.filter((product) => product.id !== action.payload.productId)
+      const filteredItems = state.items.filter((product) => product._id !== action.payload.productId)
       state.items = filteredItems
     },
     updateProduct: (state, action) => {
       const { productId, updatedProduct } = action.payload;
-      const productToUpdate = state.items.find((product) => product.id === productId);
+      const productToUpdate = state.items.find((product) => product._id === productId);
       if (productToUpdate) {
         // Update the product details with the provided data
         Object.assign(productToUpdate, updatedProduct);

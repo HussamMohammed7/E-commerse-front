@@ -16,11 +16,15 @@ import AdminOrder from './AdminPage/AdminOrder'
 import { NewProductWrapper } from './components/NewProductWrapper'
 import Profile from './Profile/Profile'
 import ProfileOrder from './Profile/ProfileOrder'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   return (
     <div >
       {/* <h1>Vite + React + Toolkit + Tailwind</h1> */}
+      <ToastContainer/>
+
       <NavBar/>
 
       <Routes>
@@ -31,7 +35,7 @@ function App() {
         <Route path="cart" element={ <Cart/> } />
 
         <Route path="login" element={ <Login/> } />
-        <Route path="/login/register" element={ <Register/> } />
+        <Route path="register" element={ <Register/> } />
         <Route path="profile" element={ <Profile/> } />
         <Route path="profile/profile-order" element={ <ProfileOrder/> } />
 
@@ -48,11 +52,6 @@ function App() {
         <Route path="admin/admin-users" element={ <AdminUsers/> } />
         <Route path="admin/admin-order" element={ <AdminOrder/> } />
         
-
-
-        
-
-
 
         <Route path="products/product-detail/:productId" element={<ProductDetail />} />
 

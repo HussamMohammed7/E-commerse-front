@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
  type Product = {
-  id: number
+  _id: number
   name: string
   image: string
   description: string
@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="h-[32rem] mb-[4rem] bg-whiterBlack shadow-lg p-4 rounded-md" > {/* Card container */}
         <img src={product.image} alt={product.name} className="w-full h-[20rem] rounded-md " />
         
-        <Link to={`product-detail/${product.id}`}>
+        <Link to={`product-detail/${product._id}`}>
         <h3 className="text-xl font-semibold mt-4 cursor-pointer hover:text-blue-600 ">{product.name}</h3>
         </Link>
         <p className="text-[#fbfbfb] mt-2" >{product.description}</p>

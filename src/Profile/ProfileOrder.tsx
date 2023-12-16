@@ -45,106 +45,52 @@ export default function ProfileOrder() {
     }
   },[]
     )
+
+
+
     return (
-      <div className='flex items-center mt-[8rem] '>
-        <div className='w-1/5 '>
-          {/* Left side content */}
-          {/* You can place your content for the left side here */}
+      <div className="pb-10">
+        <div className="text-white p-4 px-10  text-[60px] text-left">
+          Orders
+          <p className="text-[20px]">
+          View the delivery status for items and your order history
+          </p>
+          
+          <input
+      type="text"
+      placeholder="Search for order"
+      className="border border-gray-300 bg-[#D6D6D6] text-[30px] placeholder:text-[#674ea7] text-[#20124d] 
+      px-4 py-2  focus:outline-none focus:border-[#20124d] focus:ring-[#20124d] focus:ring-1"
+      
+    />
+     <select className="bg-[#D6D6D6] p-3  text-[#20124d] ml-10  text-[26px] border-2 border-[#20124d]">
+    <option value="last 3 months">Last 3 months</option>
+    <option value="last 6 months">Last 6 months</option>
+    <option value="last year">Last year</option>
+    <option value="last 2 years">Last 2 years</option>
+    <option value="last 3 years">Last 3 years</option>
+  </select>
+
+          <h2 className="text-white text-[30px] mt-10">Your Cards</h2>
         </div>
-        <section className='flex gap'>
-          <div
-            className={`bg-[#000000] sm:rounded-lg h-[42vh] mb-[26.5rem]  ${
-              open ? 'w-32' : 'w-16'
-            } duration-500 text-gray-100 px-3.5`}
-          >
-            <div className='py-3 flex'>
-              <HiMenu
-                size={26}
-                className='cursor-pointer'
-                onClick={() => setOpen(!open)}
-              />
-            </div>
-            <div className=' flex flex-col gap-4 relative '>
-              {menus?.map((menu, i) => (
-                <Link
-                  to={menu?.link}
-                  key={i}
-                  className={` ${
-                    'mt-5'
-                  } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
-                >
-                  <div>{React.createElement(menu?.icon, { size: '20' })}</div>
-                  <h2
-                    style={{
-                      transitionDelay: `${i + 3}00ms`,
-                    }}
-                    className={`whitespace-pre duration-500 ${
-                      !open && 'opacity-0 translate-x-28 overflow-hidden'
-                    }`}
-                  >
-                    {menu?.name}
-                  </h2>
-                  <h2
-                    className={`${
-                      open && 'hidden'
-                    } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-                  >
-                    {menu?.name}
-                  </h2>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-        <div className='w-[50rem] min-h-screen '>
-          {/* Left side content */}
-          {/* You can place your content for the left side here */}
-          <div className='shadow overflow-hidden sm:rounded-lg'>
-            <div className='px-4 py-5 sm:px-6 bg-[#000000] '>
-              <h3 className='text-lg leading-6 font-medium '>
-                Order History
-              </h3>
-              
-            </div>
-            <div className='border-t border-gray-200'>
-              <dl className=''>
-                <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-[#483674] '>
-                  <dt className='text-sm font-medium  '>
-                    First Name
-                  </dt>
-                  <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                    {user?.firstName}
-                  </dd>
-                </div>
-                <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-[#C2B8DB] text-black	'>
-                  <dt className='text-sm font-medium '>
-                    Last Name 
-                  </dt>
-                  <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                  {user?.lastName}
-                  </dd>
-                </div> 
-                <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6  bg-[#483674]'>
-                  <dt className='text-sm font-medium  '>
-                    Email address
-                  </dt>
-                  <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                  {user?.email}
-                  </dd>
-                </div>
-                <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-[#C2B8DB] text-black	'>
-                  <dt className='text-sm font-medium '>password</dt>
-                  <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                  {user?.password}
   
-                  </dd>
-                </div>
-                
-              </dl>
-            </div>
+        <div className="shadow-2xl w-[90%] item-center mx-auto p-10 border-[#20124d] border-t-2 border-b-2 text-left shadow-xl2 text-purple bg-[#D6D6D6]">
+          <div className="mb-2 p-2 ">
+            <p className="flex items-center">
+              <span className="flex-grow ">type:</span>
+              <span className="flex-grow">Ending in </span>
+              <span className="flex-grow">Expiry:</span>
+  
+              <span className="ml-10 cursor-pointer">
+  
+                Delete card
+                </span>
+               
+            </p>
+  
           </div>
         </div>
       </div>
-    );
+    )
   }
   

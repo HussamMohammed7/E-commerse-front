@@ -1,11 +1,11 @@
-import { DecodedUser } from '../redux/slices/products/productSlice'
+import { DecodedUser } from '../redux/slices/userSlice'
 
 export function isDecodedUser(obj: unknown): obj is DecodedUser {
   return (
     typeof obj === 'object' &&
     obj !== null &&
-    'username' in obj &&
+    'email' in obj &&
     'role' in obj &&
-    'user_id' in obj
+    '_id' in obj
   )
 }

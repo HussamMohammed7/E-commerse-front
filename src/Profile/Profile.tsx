@@ -1,150 +1,101 @@
-import React, { useEffect, useState } from 'react';
-import { HiMenu, HiMenuAlt3 } from 'react-icons/hi';
-import { AiOutlineUser, AiOutlineHistory } from 'react-icons/ai';
-import { Link, useNavigate } from 'react-router-dom';
-import { usersRequest,usersSuccess } from '../redux/slices/userSlice';
-import axios from 'axios';
-import { RootState } from '../redux/store';
-import { AiOutlineClose } from 'react-icons/ai';
-import api from '../api';
-import { ConfirmDialog } from 'primereact/confirmdialog'; // To use <ConfirmDialog> tag
-import { useDispatch, useSelector } from 'react-redux';
-import { useSelect } from '@material-tailwind/react';
+import React, { useEffect, useState } from 'react'
+import { HiMenu, HiMenuAlt3 } from 'react-icons/hi'
+import { AiOutlineUser, AiOutlineHistory } from 'react-icons/ai'
+import { Link, useNavigate } from 'react-router-dom'
+import { usersRequest, usersSuccess } from '../redux/slices/userSlice'
+import axios from 'axios'
+import { RootState } from '../redux/store'
+import { AiOutlineClose } from 'react-icons/ai'
+import api from '../api'
+import { ConfirmDialog } from 'primereact/confirmdialog' // To use <ConfirmDialog> tag
+import { useDispatch, useSelector } from 'react-redux'
+import { useSelect } from '@material-tailwind/react'
+import ProfileAddress from './ProfileAddress'
+import ProfilePayment from './ProfilePayment'
+import ProfileOrder from './ProfileOrder'
 
 export default function Profile() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const menus = [
-    { name: 'Users', link: '/profile', icon: AiOutlineUser },
-    { name: 'Orders', link: '/profile/profile-order', icon: AiOutlineHistory },
-  ];
-  const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('profile') // Default active section
 
-  const handleGetUsers = async () => {
-    dispatch(usersRequest());
+  // const handleGetUsers = async () => {
+  //   dispatch(usersRequest())
 
-    const res = await api.get('/mock/e-commerce/users.json');
-    dispatch(usersSuccess(res.data));
-  }
+  //   const res = await api.get('/mock/e-commerce/users.json')
+  //   dispatch(usersSuccess(res.data))
+  // }
+
+  // useEffect(() => {
+  //   handleGetUsers()
+  // }, [])
+
+  const user = useSelector((state: RootState) => state.user.user) // Get logged-in user
+
+  console.log(user)
+  console.log('role:', user?.role)
 
   useEffect(() => {
-    handleGetUsers();
-  }, []);
-
-  const user = useSelector((state: RootState) => state.user.user); // Get logged-in user
-
-  
-  console.log(user);
-  console.log('role:', user?.role);
-
-  useEffect(() =>{
-  if (user == null || user.role !== 'visitor') {
-    console.log('Logging in as:', user);
-    navigate('/')
-  
-  }
-},[]
-  )
+    if (user == null || user.role !== 'visitor') {
+      console.log('Logging in as:', user)
+      navigate('/')
+    }
+  }, [])
   return (
-    <div className='flex items-center mt-[8rem] '>
-      <div className='w-1/5 '>
-        {/* Left side content */}
-        {/* You can place your content for the left side here */}
+    <div className="mb-10">
+      <div className="bg-red-300 text-white mx-auto p-8 w-4/5 mt-[8rem] ">
+        <p className="text-lg mb-4">
+          Your account is not activated. check your Email to activate your account.
+        </p>
       </div>
-      <section className='flex gap'>
-        <div
-          className={`bg-[#000000] sm:rounded-lg h-[42vh] mb-[26.5rem]  ${
-            open ? 'w-32' : 'w-16'
-          } duration-500 text-gray-100 px-3.5`}
-        >
-          <div className='py-3 flex'>
-            <HiMenu
-              size={26}
-              className='cursor-pointer'
-              onClick={() => setOpen(!open)}
-            />
-          </div>
-          <div className=' flex flex-col gap-4 relative '>
-            {menus?.map((menu, i) => (
-              <Link
-                to={menu?.link}
-                key={i}
-                className={` ${
-                  'mt-5'
-                } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
-              >
-                <div>{React.createElement(menu?.icon, { size: '20' })}</div>
-                <h2
-                  style={{
-                    transitionDelay: `${i + 3}00ms`,
-                  }}
-                  className={`whitespace-pre duration-500 ${
-                    !open && 'opacity-0 translate-x-28 overflow-hidden'
-                  }`}
-                >
-                  {menu?.name}
-                </h2>
-                <h2
-                  className={`${
-                    open && 'hidden'
-                  } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-                >
-                  {menu?.name}
-                </h2>
-              </Link>
-            ))}
+      <div className="grid grid-cols-10 grid-rows-1 gap-2 mt-10 ">
+        <div className="col-start-2 col-end-4 ">
+          <div className="w-5/5 mx-auto  shadow-md text-white bg-[#20124d] cursor-pointer ">
+            {/* Profile Section */}
+            <div className=" pt-6 pb-2  border-b-2 border-t-1 hover:bg-[#674ea7] ">
+              <h3 className="text-lg font-semibold mb-4">Profile</h3>
+              {/* Add your profile content here */}
+            </div>
+
+            {/* Address Section */}
+            <div
+              className="pt-6  pb-2 border-b-2 border-t-1 hover:bg-[#674ea7] "
+              onClick={() => setActiveSection('address')}>
+              <h3 className="text-lg font-semibold mb-4">Address</h3>
+              {/* Add your address content here */}
+            </div>
+
+            {/* Orders Section */}
+            <div className="pt-6  pb-2 border-b-2 border-t-1 hover:bg-[#674ea7]  "
+             onClick={() => setActiveSection('orders')}
+                          >
+              <h3 className="text-lg font-semibold mb-4">Orders</h3>
+              {/* Add your orders content here */}
+            </div>
+
+            {/* Payment Section */}
+            <div className="pt-6  pb-2 border-b-2 border-t-1 hover:bg-[#674ea7] "
+            onClick={() => setActiveSection('payment')}>
+              <h3 className="text-lg font-semibold mb-4">Payment</h3>
+              {/* Add your payment content here */}
+            </div>
+
+            {/* Wish List Section */}
+            <div className="pt-6  pb-2  border-t-1 hover:bg-[#674ea7] ">
+              <h3 className="text-lg font-semibold mb-4">Wish List</h3>
+              {/* Add your wish list content here */}
+            </div>
           </div>
         </div>
-      </section>
-      <div className='w-[50rem] min-h-screen '>
-        {/* Left side content */}
-        {/* You can place your content for the left side here */}
-        <div className='shadow overflow-hidden sm:rounded-lg'>
-          <div className='px-4 py-5 sm:px-6 bg-[#000000] '>
-            <h3 className='text-lg leading-6 font-medium '>
-              Profile
-            </h3>
-            
-          </div>
-          <div className='border-t border-gray-200'>
-            <dl className=''>
-              <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-[#483674] '>
-                <dt className='text-sm font-medium  '>
-                  First Name
-                </dt>
-                <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                  {user?.firstName}
-                </dd>
-              </div>
-              <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-[#C2B8DB] text-black	'>
-                <dt className='text-sm font-medium '>
-                  Last Name 
-                </dt>
-                <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                {user?.lastName}
-                </dd>
-              </div> 
-              <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6  bg-[#483674]'>
-                <dt className='text-sm font-medium  '>
-                  Email address
-                </dt>
-                <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                {user?.email}
-                </dd>
-              </div>
-              <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 bg-[#C2B8DB] text-black	'>
-                <dt className='text-sm font-medium '>password</dt>
-                <dd className='mt-1 text-sm  sm:mt-0 sm:col-span-2'>
-                {user?.password}
-
-                </dd>
-              </div>
-              
-            </dl>
-          </div>
+        <div className="w-full bg-[#9D9D9D] shadow-md  col-start-4 col-end-10 text-black">
+          {activeSection === 'profile' && <div>Profile content goes here</div>}
+          {activeSection === 'address' && <ProfileAddress />}
+          {activeSection === 'orders' &&  <ProfileOrder />}
+          {activeSection === 'payment' && <ProfilePayment />}
+          {activeSection === 'wishlist' && <div>Wishlist content goes here</div>}
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   productsRequest,
   productsSuccess,
-  removeProduct,
 } from '../redux/slices/products/productSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import api from '../api';
@@ -20,47 +19,14 @@ export default function Products() {
   const state = useSelector((state: RootState) => state);
   const products = state.products;
 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [perPage, setPerPage] = useState(10); // Default value for products per page
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     handleGetProducts();
-  }, []);
-
-  const [selectedCategory, setSelectedCategory] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6; // Display 6 products per page
-  const maxPages = 3; // Show up to 3 pages
-
-  const filterProducts = () => {
-    let filteredProducts = products.items;
-
-    if (selectedCategory !== 0) {
-      filteredProducts = filteredProducts.filter((product) =>
-        product.categories.includes(selectedCategory)
-      );
-    }
-
-    if (searchQuery) {
-      filteredProducts = filteredProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    return filteredProducts;
-  };
-
-  const handleGetProducts = async () => {
-    dispatch(productsRequest());
-
-    const res = await api.get('/mock/e-commerce/products.json');
-    dispatch(productsSuccess(res.data));
-  };
-
-  const handleCategoryChange = (category: number) => {
-    setSelectedCategory(category);
-    setCurrentPage(1);
-  };
-
-  const [categories, setCategories] = useState<Category[]>([]);
+  }, [perPage]);
 
   useEffect(() => {
     axios
@@ -73,96 +39,60 @@ export default function Products() {
       });
   }, []);
 
-  const filteredProducts = filterProducts();
-  const pageCount = Math.ceil(filteredProducts.length / productsPerPage);
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.min(pageCount, maxPages); i++) {
-    pageNumbers.push(i);
-  }
+  const handleGetProducts = async () => {
+    dispatch(productsRequest());
 
-  const visibleProducts = filteredProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage
-  );
+    const res = await api.get('http://localhost:5050/api/products', {
+      params: {
+        perPage,
+        page,
+        searchQuery,
+      },
+    });
+
+    dispatch(productsSuccess(res.data.items));
+  };
 
   return (
     <div className="grid grid-cols-1 w-full">
       {products.isLoading && <h3>Loading products...</h3>}
+      <nav className="sticky top-20 bg-[#1a1a1a] p-4 shadow-md z-10 flex justify items-center">
+        <div className=" items-center mx-auto">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className=" border p-2 px-[500px] rounded text-left "
+            
+          />
+        </div>
+        <div className="flex items-center">
+          <label className="mr-2">Products per page:</label>
+          <select
+            value={perPage}
+            onChange={(e) => setPerPage(Number(e.target.value))}
+            className="border p-2 mr-5 rounded pr-10"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
+      </nav>
       <div className="card grid gap-4 mt-20">
         <div className="mb-4">
-          <h2 className="text-2xl font-semibold mb-2">Product Filters</h2>
-          <div>
-            <label htmlFor="categorySelect">Filter by Category:</label>
-            <select
-              id="categorySelect"
-              onChange={(e) => handleCategoryChange(Number(e.target.value))}
-            >
-              <option value={0}>All</option>
-              {categories.map((categoryItem) => (
-                <option key={categoryItem.id} value={categoryItem.id}>
-                  {categoryItem.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="searchInput">Search:</label>
-            <input
-              type="text"
-              id="searchInput"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          {/* Removed filter options */}
         </div>
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {visibleProducts.map((product) => (
-            <li key={product.id}>
+          {products.items.map((product) => (
+            <li key={product._id}>
               <ProductCard product={product} />
             </li>
           ))}
         </ul>
-        <div className="pagination">
-          <button
-            className="page-button"
-            onClick={() => setCurrentPage(1)}
-            disabled={currentPage === 1}
-          >
-            First
-          </button>
-          <button
-            className="page-button"
-            onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          {pageNumbers.map((pageNumber) => (
-            <button
-              key={pageNumber}
-              className={`page-button ${
-                currentPage === pageNumber ? 'current-page' : ''
-              }`}
-              onClick={() => setCurrentPage(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          ))}
-          <button
-            className="page-button"
-            onClick={() => setCurrentPage(Math.min(currentPage + 1, pageCount))}
-            disabled={currentPage === pageCount}
-          >
-            Next
-          </button>
-          <button
-    className="page-button"
-    onClick={() => setCurrentPage(pageCount)}
-    disabled={currentPage === pageCount}
-  >
-    Last
-  </button>
-        </div>
+        
       </div>
     </div>
   );

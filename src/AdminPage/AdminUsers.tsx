@@ -9,24 +9,38 @@ import { AiOutlineClose } from 'react-icons/ai';
 import api from '../api';
 import { ConfirmDialog } from 'primereact/confirmdialog'; // To use <ConfirmDialog> tag
 
-
+interface Order {
+  _id: number;
+  productId: number;
+  userId: number;
+  purchasedAt: string;
+}
 interface Users {
-  id: number;
-  firstName: string;
-  lastName: string;
+  _id: number;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
   role: string;
+  isActive : boolean;
+  orders : Order[];
 }
 
+interface UsersData {
+  page : number
+  perPage : number,
+  totalUsers : number,
+  totalPages : number,
+  users: Users[];
+}
 
 export default function AdminUsers() {
   
-  const TABLE_HEAD = ["ID", "FirstName", "LastName", "Email", "Password", "Role", "Actions","",];
+  const TABLE_HEAD = ["ID", "FirstName", "LastName", "Email", "Password", "Role","Active", "Actions","",];
 
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
-  const user = state.user;
+  const users = state.user.users;
 
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
 
@@ -38,46 +52,60 @@ export default function AdminUsers() {
 
   };
   
+  const deleteUserRequest = async (id : number) => {
+    try {
+      const res = await api.delete(`http://localhost:5050/api/users/${id}`);
+      console.log('User deleted successfully:', res.data);
+      dispatch(removeUser({ userId: selectedUserId || 0 }));  
+      // Optionally, you might want to update the state or perform other actions after a successful update.
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      // Optionally, handle errors or show a message to the user.
+    }
+  };
   
+  const handleDeletedUser = async () => {
+    try {
+      // Assuming selectedUser contains the updated data
+      await deleteUserRequest(selectedUserId!!);
+      // Optionally, you might want to do something after a successful update, e.g., close the form.
+      console.log(selectedUser + ' Deleted)');
+    } catch (error) {
+      console.error('Error Deleted user:', error);
+      // Optionally, handle errors or show a message to the user.
+    }
+  };
   
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const [open, setIsOpen] = React.useState(false);
   const [selectedUser, setSelectedUser] = useState<Users | null>(null);
  
-  const openForm = (user: Users) => {
+  const openForm = ( userId: number) => {
     setIsOpen(true);
-    setSelectedUser(user);
+    setSelectedUserId(userId);
+
   };
  
   const handleGetUsers = async () => {
     dispatch(usersRequest());
 
-    const res = await api.get('/mock/e-commerce/users.json');
-    dispatch(usersSuccess(res.data));
+    const res = await api.get('http://localhost:5050/api/users');
+    console.log(res.data);
+    dispatch(usersSuccess(res.data.users));
   }
 
   useEffect(() => {
     handleGetUsers();
   }, []);
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (selectedUser) {
-      setSelectedUser({
-        ...selectedUser,
-        [name]: value,
-      });
-    }
-  };
+  
 
   const handleSubmit = () => {
     // Move the form submission logic here.
     // You can access selectedUser and dispatch here.
-    if (selectedUser) {
-      dispatch(updateUser({ userId: selectedUser.id, updatedUser: selectedUser }));
       closeForm();
-    }
+    
   };
 
   const closeForm = () => {
@@ -85,7 +113,9 @@ export default function AdminUsers() {
     setSelectedUser(null);
   };
 
-  
+ 
+
+
 
 
   return (
@@ -111,10 +141,10 @@ export default function AdminUsers() {
                     </tr>
                   </thead>
                   <tbody>
-                    {user.users.map((user, index) => (
+                    {users.map((user, index) => (
                       
                       <tr
-                        key={user.id}
+                        key={user._id}
                         className={
                           index % 2 === 0
                             ? "border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600"
@@ -123,16 +153,20 @@ export default function AdminUsers() {
                       >
                               
                         <td className="whitespace-nowrap px-4 py-3 font-medium">
-                          {user.id}
+                          {user._id}
                         </td>
-                        <td className="whitespace-nowrap px-4 py-3">{user.firstName}</td>
-                        <td className="whitespace-nowrap px-4 py-3">{user.lastName}</td>
+                        <td className="whitespace-nowrap px-4 py-3">{user.first_name}</td>
+                        <td className="whitespace-nowrap px-4 py-3">{user.last_name}</td>
                         <td className="whitespace-nowrap px-4 py-3">{user.email}</td>
                         <td className="whitespace-nowrap px-4 py-3">{user.password}</td>
                         <td className="whitespace-nowrap px-4 py-3">{user.role}</td>
+                        <td className="whitespace-nowrap px-4 py-3">{user.isActive.toString()}</td>
+
+
                         <td
                           className="whitespace-nowrap px-4 py-3 cursor-pointer hover:text-[#530296]"
-                          onClick={() => openForm(user)}
+                          onClick={() => openForm(user._id)}
+                          
                         >
                           Edit
                         </td>
@@ -151,14 +185,14 @@ export default function AdminUsers() {
         rejectLabel="No"
         acceptClassName="p-button-primary  bg-green-900 ml-4 mt-8 pl-10 pr-10"
         rejectClassName="p-button-secondary  bg-red-900 pl-10 pr-10"
-        accept={() =>dispatch(removeUser({ userId: selectedUserId || 0 }))}
+        accept={handleDeletedUser}
         className='bg-[#3d3d3d] p-10 rounded'
 
       />
                       <span
                       
-                      className="whitespace-nowrap px-4 py-3 text-red-700 hover:text-red-300 cursor-pointer"
-                       onClick={()=>showConfirmDialog(user.id)}
+                      className="whitespace-nowrap px-1 py-3 text-red-700 hover:text-red-300 cursor-pointer pr-10"
+                       onClick={()=>showConfirmDialog(user._id)}
                       >
                    
                        <AiOutlineClose  />
@@ -174,12 +208,11 @@ export default function AdminUsers() {
           </div>
         </div>
         <div>
-          <EditUser
-            selectedUser={selectedUser}
-            handleInputChange={handleInputChange}
+       { open &&  <EditUser
+            selectedIDUser={selectedUserId}
             handleSubmit={handleSubmit}
             handleClose={closeForm}
-          />
+          />}
         </div>
         <div>
   

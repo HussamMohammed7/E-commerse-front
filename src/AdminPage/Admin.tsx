@@ -9,28 +9,31 @@ import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
 import AdminSideBar from './AdminSideBar';
 import { RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserRole ,loginUser} from '../redux/slices/userSlice';
-import { usersRequest, usersSuccess } from '../redux/slices/userSlice';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
+import { getDecodedTokenFromStorage } from '../utils/token';
+
+
+
 export default function Admin() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
-  const usersData = state.user.users;
-  const [loginSuccess, setLoginSuccess] = useState(false); 
-  
-  const user = useSelector((state: RootState) => state.user.user); // Get logged-in user
+  const user = state.user.user;  
   console.log(user);
-  console.log('role:', user?.role);
+  console.log('admin page role:', user?.role);
 
-  useEffect(() =>{
-  if (user == null || user.role !== 'admin') {
-    console.log('Logging in as:', user);
-    navigate('/')
+  useEffect(() => {
+
+    const decodedUser = getDecodedTokenFromStorage(); // Retrieve decoded user from storage
+    console.log('Decoded User:', decodedUser);
+    console.log('admin page role:', user?.role);
+    if (user == null || user.role !== 'admin') {
+      console.log('Logging in as:', user);
+      navigate('/');
+    }
+  }, [user, navigate]);
+
   
-  }
-},[]
-  )
 
   return(
     <div className='flex'>
@@ -38,8 +41,9 @@ export default function Admin() {
       <div >
 
       <p className="m-3 text-8xl  font-mono  text-left p-10 mt-20 align-[50rem]  first-letter:font-bold first-letter:text-[#530296]">
-            Welcome
+            Welcome {user?.first_name} {user?.last_name}
             </p>
+
 
             </div>
     </div>
