@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import api from '../../../api';
 
 export type Category = {
-  id: number;
+  _id: string;
   name: string;
 };
 
@@ -16,7 +17,35 @@ const initialCategoryState: CategoryState = {
   error: null,
   isLoading: false,
 };
+export const getCategoriesThunk = createAsyncThunk('categories/get', async () => {
+  try {
+    const res = await api.get('api/categories');
+    return res.data.categories;
+  } catch (error) {
+    console.error('getCategoriesThunk error:', error);
+    throw error;
+  }
+});
 
+export const addCategoryThunk = createAsyncThunk('categories/add', async (category: Category) => {
+  try {
+    const res = await api.post('http://localhost:5050/api/categories', category);
+    return res.data.category;
+  } catch (error) {
+    console.error('addCategoryThunk error:', error);
+    throw error;
+  }
+});
+
+export const deleteCategoryThunk = createAsyncThunk('categories/delete', async (categoryId: string) => {
+  try {
+    await api.delete(`api/categories/${categoryId}`);
+    return categoryId;
+  } catch (error) {
+    console.error('deleteCategoryThunk error:', error);
+    throw error;
+  }
+});
 export const categorySlice = createSlice({
   name: 'category',
   initialState: initialCategoryState,
@@ -32,22 +61,38 @@ export const categorySlice = createSlice({
       // Append the new category to the beginning of the array
       state.items = [action.payload.category, ...state.items];
     },
-    removeCategory: (state, action: { payload: { categoryId: number } }) => {
+    removeCategory: (state, action: { payload: { categoryId: string } }) => {
       const filteredItems = state.items.filter(
-        (category) => category.id !== action.payload.categoryId
+        (category) => category._id !== action.payload.categoryId
       );
       state.items = filteredItems;
     },
     updateCategory: (state, action) => {
       const { categoryId, updatedCategory } = action.payload;
       const categoryToUpdate = state.items.find(
-        (category) => category.id === categoryId
+        (category) => category._id === categoryId
       );
       if (categoryToUpdate) {
         // Update the category details with the provided data
         Object.assign(categoryToUpdate, updatedCategory);
       }
     },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(getCategoriesThunk.fulfilled, (state, action) => {
+      state.items = action.payload;
+      state.isLoading = false;
+    });
+
+    builder.addCase(addCategoryThunk.fulfilled, (state, action) => {
+      state.items.push(action.payload);
+    });
+
+    builder.addCase(deleteCategoryThunk.fulfilled, (state, action) => {
+      const categoryId = action.payload;
+      state.items = state.items.filter((category) => category._id !== categoryId);
+    });
   },
 });
 

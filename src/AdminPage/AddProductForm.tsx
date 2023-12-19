@@ -1,14 +1,17 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { Product } from '../redux/slices/products/productSlice';
+import { Product, addProductThunk } from '../redux/slices/products/productSlice';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../redux/store';
 
 type ProductFormProps = {
   initialProduct: Product;
-  handleSubmit: (product: Product) => void;
   handleClose: () => void;
 };
 
-export function ProductForm({ initialProduct, handleSubmit, handleClose }: ProductFormProps) {
+export function ProductForm({ initialProduct, handleClose }: ProductFormProps) {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [product, setProduct] = useState(initialProduct);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -33,8 +36,8 @@ export function ProductForm({ initialProduct, handleSubmit, handleClose }: Produ
 
   const submitForm = (e: React.FormEvent) => {
     e.preventDefault();
-    product.id = +new Date().getTime();
-    handleSubmit(product); // Pass the product object to the parent component
+    dispatch(addProductThunk(product)); // Dispatch the addProductThunk with the product data
+    handleClose(); // Close the form
   };
 
   return (

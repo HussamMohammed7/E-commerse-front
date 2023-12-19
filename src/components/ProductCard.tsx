@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Category } from '../redux/slices/Category/CategorySlice';
+import { Product } from '../redux/slices/products/productSlice';
 
- type Product = {
-  _id: number
-  name: string
-  image: string
-  description: string
-  price: number
-  categories: number[]
-  variants: string[]
-  sizes: string[]
-}
+ 
 import { addToCart } from '../redux/slices/products/cartSlice';
 import { useDispatch } from 'react-redux';
 
@@ -31,8 +24,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   
 
   return (
-    <div className=" p-6 " > {/* Set width to 1/3 for three cards in a row and add padding */}
-      <div className="h-[32rem] mb-[4rem] bg-whiterBlack shadow-lg p-4 rounded-md" > {/* Card container */}
+    <div className=" p-6  " > {/* Set width to 1/3 for three cards in a row and add padding */}
+      <div className="h-[32rem] mb-[4rem] bg-whiterBlack shadow-lg p-4 rounded-md border-[#20124d] border-2" > {/* Card container */}
         <img src={product.image} alt={product.name} className="w-full h-[20rem] rounded-md " />
         
         <Link to={`product-detail/${product._id}`}>

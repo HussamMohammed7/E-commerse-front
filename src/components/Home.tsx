@@ -35,7 +35,7 @@ const Home = () => {
     <div>
       <ImageSlider />
       <div className="absolute inset-0 flex flex-col justify-center items-center text-white">
-        <h1 className="text-6xl font-bold">Cable master</h1>
+        <h1 className="text-6xl font-bold text-shadow-2xl ">Cable master</h1>
         <p className="text-xl">More than just cables</p>
       </div>
       <h1 className="p-[4rem] text-left">Top product</h1>

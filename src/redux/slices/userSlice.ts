@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import api from '../../api'
 import { AxiosError } from 'axios'
+import { getDecodedTokenFromStorage } from '../../utils/token'
 
 export type DecodedUser = {
   role: Role
@@ -14,14 +15,23 @@ export const ROLES = {
 
 type Role = 'visitor' | 'admin'
 export type User = {
-  _id: number
+  _id: string
   first_name: string
   last_name: string
   email: string
-  password: string
   role: Role
   isActive: boolean
+  phone: string
+  address:Address[]
   orders: Order[]
+}
+interface Address {
+  name: string
+  street: string
+  city: string
+  country: string
+  phone: string
+
 }
 interface Order {
   _id: number
@@ -59,6 +69,32 @@ export const loginThunk = createAsyncThunk(
     }
   }
 )
+export const fetchUserByTokenThunk = createAsyncThunk(
+  'user/fetchUserByToken',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      console.log('Token:', token);
+
+      if (token) {
+        const decodedUser = getDecodedTokenFromStorage();
+        console.log('Decoded User: id', decodedUser?._id);
+
+        const res = await api.get(`http://localhost:5050/api/users/${decodedUser?._id}`);
+        console.log('res.data from fetchUserByToken', res.data);
+
+        return res.data;
+      } else {
+        console.log('Token is not available.');
+        return null; // Or handle the absence of a token as needed
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return rejectWithValue(error);
+      }
+    }
+  }
+);
 export const getUserOneThunk = createAsyncThunk(
   'user/getUserOne',
   // Declare the type your function argument here:
@@ -76,6 +112,14 @@ export const getUserOneThunk = createAsyncThunk(
     }
   }
 )
+export const deleteUserThunk = createAsyncThunk('users/delete', async (userId: string) => {
+  try {
+    await api.delete(`api/users/${userId}`)
+    return userId
+  } catch (error) {
+    console.log('👀 ', error)
+  }
+})
 
 export const userSlice = createSlice({
   name: 'user',
@@ -91,7 +135,7 @@ export const userSlice = createSlice({
     addUser: (state, action: { payload: { user: User } }) => {
       state.users = [action.payload.user, ...state.users]
     },
-    removeUser: (state, action: { payload: { userId: number } }) => {
+    removeUser: (state, action: { payload: { userId: string } }) => {
       const filteredUsers = state.users.filter((user) => user._id !== action.payload.userId)
       state.users = filteredUsers
     },
@@ -145,7 +189,22 @@ export const userSlice = createSlice({
       return state
     })
 
+    builder.addCase(fetchUserByTokenThunk.fulfilled, (state, action) => {
+      console.log('fulfilled');
+      if (!state.user) {
+        state.user = action.payload;
+      }
+      console.log('fetchUserByToken state', state.user);
+      state.isLoading = false;
+      return state;
+    })
 
+    builder.addCase(deleteUserThunk.fulfilled, (state, action) => {
+      const userId = action.payload
+      const updatedUsers = state.users.filter((user) => user._id !== userId)
+      state.users = updatedUsers
+      return state
+    })
 
 
 

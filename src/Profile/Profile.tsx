@@ -13,6 +13,7 @@ import { useSelect } from '@material-tailwind/react'
 import ProfileAddress from './ProfileAddress'
 import ProfilePayment from './ProfilePayment'
 import ProfileOrder from './ProfileOrder'
+import ProfileInformation from './ProfileInformation'
 
 export default function Profile() {
   const dispatch = useDispatch()
@@ -43,17 +44,24 @@ export default function Profile() {
     }
   }, [])
   return (
+    
     <div className="mb-10">
+      {user?.isActive === false ?(
       <div className="bg-red-300 text-white mx-auto p-8 w-4/5 mt-[8rem] ">
         <p className="text-lg mb-4">
           Your account is not activated. check your Email to activate your account.
         </p>
       </div>
-      <div className="grid grid-cols-10 grid-rows-1 gap-2 mt-10 ">
+      ): (
+        
+      
+      <div className="grid grid-cols-10 grid-rows-1 gap-2 mt-[8rem] ">
         <div className="col-start-2 col-end-4 ">
-          <div className="w-5/5 mx-auto  shadow-md text-white bg-[#20124d] cursor-pointer ">
+          <div className="w-5/5 mx-auto  shadow-md text-white bg-[#20124d] cursor-pointer "
+         >
             {/* Profile Section */}
-            <div className=" pt-6 pb-2  border-b-2 border-t-1 hover:bg-[#674ea7] ">
+            <div className=" pt-6 pb-2  border-b-2 border-t-1 hover:bg-[#674ea7] "
+             onClick={() => setActiveSection('profile')}>
               <h3 className="text-lg font-semibold mb-4">Profile</h3>
               {/* Add your profile content here */}
             </div>
@@ -89,13 +97,12 @@ export default function Profile() {
           </div>
         </div>
         <div className="w-full bg-[#9D9D9D] shadow-md  col-start-4 col-end-10 text-black">
-          {activeSection === 'profile' && <div>Profile content goes here</div>}
+          {activeSection === 'profile' && <ProfileInformation />}
           {activeSection === 'address' && <ProfileAddress />}
           {activeSection === 'orders' &&  <ProfileOrder />}
           {activeSection === 'payment' && <ProfilePayment />}
           {activeSection === 'wishlist' && <div>Wishlist content goes here</div>}
         </div>
       </div>
-    </div>
-  )
-}
+      )}
+    </div>)}

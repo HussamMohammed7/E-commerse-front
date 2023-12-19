@@ -1,4 +1,3 @@
-import { ProductsManager } from './components/ProductsManager'
 import './App.css'
 import Home from './components/Home'
 import NavBar from './components/NavBar'
@@ -18,6 +17,7 @@ import Profile from './Profile/Profile'
 import ProfileOrder from './Profile/ProfileOrder'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import AdminCategory from './AdminPage/AdminCategory'
 
 function App() {
   return (
@@ -31,7 +31,6 @@ function App() {
         <Route path="/" element={ <Home/> } />
         <Route path="products" element={ <Products/> } />
         <Route path="about-us" element={ <AboutUs/> } />
-        <Route path="products-manager" element={ <ProductsManager/> } />
         <Route path="cart" element={ <Cart/> } />
 
         <Route path="login" element={ <Login/> } />
@@ -51,6 +50,8 @@ function App() {
 
         <Route path="admin/admin-users" element={ <AdminUsers/> } />
         <Route path="admin/admin-order" element={ <AdminOrder/> } />
+        <Route path="admin/admin-categories" element={ <AdminCategory/> } />
+
         
 
         <Route path="products/product-detail/:productId" element={<ProductDetail />} />

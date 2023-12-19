@@ -4,21 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import api from '../api';
 import { RootState } from '../redux/store';
 
-interface Users {
-  _id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-  role: string;
-  orders: Order[];
-}
-interface Order {
-  _id: number;
-  productId: number;
-  userId: number;
-  purchasedAt: string;
-}
+
+
 
 export default function Register() {
   const [formData, setFormData] = useState({

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { getDecodedTokenFromStorage } from '../utils/token';
-import { getUserOneThunk } from '../redux/slices/userSlice';
+import { fetchUserByTokenThunk, getUserOneThunk } from '../redux/slices/userSlice';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 
 export default function NavBar() {
@@ -13,23 +13,16 @@ export default function NavBar() {
   const dispatch = useDispatch<AppDispatch>();
 
   const user = state.user.user;  
-  console.log(user);
 
 
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
 
 
-  const token = localStorage.getItem('token');
-  console.log('Token:', token);
-  
-  if (token) {
-    const decodedUser = getDecodedTokenFromStorage();
-    console.log('Decoded User: id', decodedUser?._id);
-      dispatch(getUserOneThunk(decodedUser?._id as string));
-  
-  } else {
-    console.log('Token is not available.');
-  }
+
+  useEffect(() => {
+    // Dispatch the fetchUserByTokenThunk when the component mounts
+    dispatch(fetchUserByTokenThunk());
+  }, [dispatch]);
  
 
 
@@ -65,7 +58,6 @@ export default function NavBar() {
           <li><Link to="/" className="hover:text-blue-300">Home</Link></li>
           <li><Link to="products" className="hover:#1e1b4b">Products</Link></li>
           <li><Link to="about-us" className="hover:text-blue-300">About Us</Link></li>
-          <li><Link to="products-manager" className="hover:text-blue-300">ProductsManager</Link></li>
           {user && user.role === 'admin' && (
 
             <li><Link to="admin" className="hover:text-blue-300">Admin</Link></li>

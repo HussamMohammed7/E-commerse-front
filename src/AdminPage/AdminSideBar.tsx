@@ -5,6 +5,8 @@ import { RiSettings4Line } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
 import { AiOutlineUser, AiOutlineHeart, AiOutlineHistory } from "react-icons/ai";
 import { FiMessageSquare, FiFolder, FiShoppingCart } from "react-icons/fi";
+import { FiLayers } from "react-icons/fi";
+
 import { Link } from "react-router-dom";
 
 export default function AdminSideBar() {
@@ -12,7 +14,9 @@ export default function AdminSideBar() {
         // { name: "dashboard", link: "/", icon: MdOutlineDashboard },
         { name: "Users", link: "/admin/admin-users", icon: AiOutlineUser },
         { name: "Products", link: "/admin/admin-product", icon: MdOutlineLocalGroceryStore },
-        { name: "Orders", link: "/admin/admin-order", icon: AiOutlineHistory },
+        { name: "Catagories", link: "/admin/admin-categories", icon: FiLayers },
+        { name: "Orders", link: "/admin/admin-order", icon: AiOutlineHistory }
+
 
         // { name: "messages", link: "/", icon: FiMessageSquare },
         // { name: "Setting", link: "/", icon: RiSettings4Line },

@@ -71,26 +71,19 @@ export default function ProfileOrder() {
     <option value="last 3 years">Last 3 years</option>
   </select>
 
-          <h2 className="text-white text-[30px] mt-10">Your Cards</h2>
-        </div>
-  
-        <div className="shadow-2xl w-[90%] item-center mx-auto p-10 border-[#20124d] border-t-2 border-b-2 text-left shadow-xl2 text-purple bg-[#D6D6D6]">
-          <div className="mb-2 p-2 ">
-            <p className="flex items-center">
-              <span className="flex-grow ">type:</span>
-              <span className="flex-grow">Ending in </span>
-              <span className="flex-grow">Expiry:</span>
-  
-              <span className="ml-10 cursor-pointer">
-  
-                Delete card
-                </span>
-               
-            </p>
-  
-          </div>
-        </div>
+        </div >
+        <div className="relative">
+  <img src="src\pictures\No data-cuate.png" alt="image" className="w-[500px] mx-auto mb-10" />
+  <div className="absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+    <h3 className="text-[40px] text-white mb-2">No items found</h3>
+    <p className="text-[20px] text-[#674ea7]">
+      We couldn't find any items that matched your search in the given time period
+    </p>
+  </div>
+</div>
+
       </div>
+
     )
   }
   

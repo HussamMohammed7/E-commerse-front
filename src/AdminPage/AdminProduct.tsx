@@ -1,222 +1,181 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
-import AdminSideBar from './AdminSideBar';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState, ChangeEvent } from 'react'
+import AdminSideBar from './AdminSideBar'
+import { useDispatch, useSelector } from 'react-redux'
 import {
-  productsRequest,
-  productsSuccess,
-  removeProduct,
-  updateProduct,
-  addProduct,
-} from '../redux/slices/products/productSlice';
-import { AppDispatch, RootState } from '../redux/store';
-import api from '../api';
-import { AiOutlineClose } from 'react-icons/ai';
-import EditProductForm from './EditProductForm';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { ProductForm } from './AddProductForm';
+  addProductThunk,
+  deleteProductThunk,
+  getProductsByPageThunk,
+  getProductsThunk
+} from '../redux/slices/products/productSlice'
+import { AppDispatch, RootState } from '../redux/store'
+import api from '../api'
+import { AiOutlineClose } from 'react-icons/ai'
+import EditProductForm from './EditProductForm'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+import { ProductForm } from './AddProductForm'
+import { Product } from '../redux/slices/products/productSlice'
+import { ConfirmDialog } from 'primereact/confirmdialog'
+import { getCategoriesThunk } from '../redux/slices/Category/CategorySlice'
 
 interface Category {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
-
-type Product = {
-  id: number;
-  name: string;
-  image: string;
-  description: string;
-  price: number;
-  categories: number[]; // Changed to string[]
-  variants: string[];
-  sizes: string[];
-  [key: string]: any;
-};
 
 export default function AdminProduct() {
   const initialProductState: Product = {
-    id: 0, // You can set a default value for id or leave it as 0
+    _id: '',
     name: '',
     image: '',
     description: '',
-    price: 0, // You can set a default value for price or leave it as 0
-    categories: [], // Initialize with an empty array
+    price: 0,
+    categories: [],
     variants: [],
-    sizes: [],
-  };
+    sizes: []
+  }
   const TABLE_HEAD = [
-    "ID",
-    "Name",
-    "Image",
-    "Description",
-    "Categories",
-    "Variants",
-    "Sizes",
-    "Price",
-    "Actions",
-    ""
-  ];
-
-  const dispatch = useDispatch<AppDispatch>();
-  const state = useSelector((state: RootState) => state);
-  const products = state.products;
-
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [showNewProductForm, setShowNewProductForm] = useState(false); // Add a state for showing the new product form
-  let filteredProducts : Product[] = products.items;
-
-  const openNewProductForm = () => {
-    setShowNewProductForm(true);
-  };
-
-  const closeNewProductForm = () => {
-    setShowNewProductForm(false);
-  };
-
+    'ID',
+    'Name',
+    'Image',
+    'Description',
+    'Categories',
+    'Variants',
+    'Sizes',
+    'Price',
+    'Actions',
+    ''
+  ]
+  const [pagination, setPagination] = useState({
+    perPage: 10,
+    page: 1,
+    totalPages: 0,
+    totalProduct: 0,
+  });
+  
   const handleAddProduct = (newProduct: Product) => {
     // Call the addProduct action
-    
-    dispatch(addProduct({ product: newProduct }));
-    console.log(newProduct.categories);
+    dispatch(addProductThunk(newProduct))
     // Close the new product form
-    closeNewProductForm();
-  };
+    setShowNewProductForm(false)
+  }
 
+  const dispatch = useDispatch<AppDispatch>()
+  const state = useSelector((state: RootState) => state)
+  const products = state.products.items
+  console.log('products',products)
 
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [selectedProductID, setSelectedProductID] = useState<string | null>(null)
 
+  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
+
+  const [showNewProductForm, setShowNewProductForm] = useState(false)
+
+  const [perPage, setPerPage] = useState(10) // Default value for products per page
+  const [page, setPage] = useState(1)
+  const [searchName, setSearchName] = useState('')
+  const [filteredItem, setFilteredItem] = useState<Product[]>(products);
+  
   useEffect(() => {
-    handleGetProducts();
-  }, []);
+    setFilteredItem(products)
+  }, [products])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch products based on the current pagination and search term
+        const action = await dispatch(getProductsByPageThunk({ ...pagination, searchName }));
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (selectedProduct) {
-      setSelectedProduct({
-        ...selectedProduct,
-        [name]: value,
-      });
-    }
-  };
-
-
-  const handleArrayInputChange = (e: ChangeEvent<HTMLInputElement>, key: string, index: number) => {
-    const { value } = e.target;
-  
-    if (selectedProduct) {
-      setSelectedProduct((prevProduct) => {
-        if (!prevProduct) return prevProduct;
-  
-        const updatedProduct = { ...(prevProduct as Product) };
-  
-        if (key === 'categories') {
-          const updatedCategories = [...updatedProduct[key]];
-          updatedCategories[index] = Number(value.trim());
-          updatedProduct[key] = updatedCategories;
+        if (getProductsByPageThunk.fulfilled.match(action)) {
+          const { perPage, page, totalPages, totalProduct, items } = action.payload;
+          setPagination({
+            perPage,
+            page,
+            totalPages,
+            totalProduct,
+          });
+          setFilteredItem(items);
         } else {
-          const updatedArray = [...updatedProduct[key]];
-          updatedArray[index] = value.trim();
-          updatedProduct[key] = updatedArray;
+          console.error('Error fetching products by page:', action.error);
         }
-  
-        return { ...prevProduct, ...updatedProduct };
-      });
-    }
-  };
-  
-  
-  
-  
-  
-
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+     if(products.length === 0) {
+      fetchData();
+     }
+    console.log('searchName: ', searchName);
+  }, [dispatch, pagination.page, pagination.perPage, searchName]);
 
   const handleSubmit = () => {
-    if (selectedProduct) {
-      dispatch(updateProduct({ productId: selectedProduct.id, updatedProduct: selectedProduct }));
-      filteredProducts = products.items;
-      closeEditForm();
-    }
-  };
+    closeEditForm()
+  }
 
-  const openEditForm = (product: Product) => {
-    setSelectedProduct(product);
-    setShowEditForm(true);
-  };
+  const openEditForm = (product : Product) => {
+    setSelectedProduct(product)
+    setShowEditForm(true)
+  }
 
   const closeEditForm = () => {
-    setShowEditForm(false);
-    setSelectedProduct(null);
-  };
+    setShowEditForm(false)
+    setSelectedProduct(null)
+  }
 
-  const handleGetProducts = async () => {
-    dispatch(productsRequest());
-    
-
-    const res = await api.get('/mock/e-commerce/products.json');
-    
-    dispatch(productsSuccess(res.data));
-  };
-
-  const [showEditForm, setShowEditForm] = useState(false);
-
-  //filter method 
-  //this will use to 
-  const [categories, setCategories] = useState<Category[]>([]);
-  
-  const [selectedCategory, setSelectedCategory] = useState(0); 
-
-  //fitch the categories
+  const [showEditForm, setShowEditForm] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [selectedCategory, setSelectedCategory] = useState(0)
+  const showConfirmDialog = (productId: string) => {
+    setConfirmDialogVisible(true)
+    setSelectedProductID(productId)
+  }
   useEffect(() => {
-    axios.get('/mock/e-commerce/categories.json') // Adjust the URL as needed
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+    dispatch(getCategoriesThunk());
+  }, [dispatch]);
 
   const handleCategoryChange = (category: number) => {
-    setSelectedCategory(category);
-  };
-
-  const filterProducts = () => {
-  
-    if (selectedCategory !== 0) {
-      filteredProducts = filteredProducts.filter(product =>
-        product.categories.includes(selectedCategory)
-      );
-    }
-  
-    return filteredProducts;
-  };
+    setSelectedCategory(category)
+  }
+  const handleDeleteProduct = (id: string) => {
+    console.log(id)
+    dispatch(deleteProductThunk(id))
+  }
 
   return (
     <div className="flex">
       <AdminSideBar />
       <div className="flex flex-col mt-20 h-full w-full">
-      <div className='text-left '>
-          <label htmlFor="categorySelect" className='ml-4'>Filter by Category:</label>
+        <div className="text-left ">
+          <label className="mr-2">Products per page:</label>
+          <select
+            value={perPage}
+            onChange={(e) => setPerPage(Number(e.target.value))}
+            className="border p-2 mr-5 rounded pr-10">
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+          </select>
+          <label htmlFor="categorySelect" className="ml-4">
+            Filter by Category:
+          </label>
           <select
             id="categorySelect"
-            className='p-4 pr-[50rem] mt-5 ml-10'
-            onChange={(e) => handleCategoryChange(Number(e.target.value))}
-          >
-            <option  value={0}>All</option>
-            {categories.map(categoryItem => (
-              <option  key={categoryItem.id} value={categoryItem.id}>
+            className="p-4 pr-[30rem] mt-5 ml-10"
+            onChange={(e) => handleCategoryChange(Number(e.target.value))}>
+            <option value={0}>All</option>
+            {categories.map((categoryItem) => (
+              <option key={categoryItem.id} value={categoryItem.id}>
                 {categoryItem.name}
               </option>
             ))}
           </select>
           <span
-           onClick={openNewProductForm} // Open the new product form when the button is clicked
-           className='rounded p-2 ml-2 
+            onClick={() => setShowNewProductForm(true)}
+            className="rounded p-2 ml-2 cursor-pointer hover:text-[#530296]">
+            Add Product
+          </span>
           
-           cursor-pointer hover:text-[#530296]'>Add Product</span>
-             <span
-           className='rounded p-2 ml-2 
-          
-           cursor-pointer hover:text-[#530296]'>Add New Category</span>
         </div>
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
@@ -226,51 +185,63 @@ export default function AdminProduct() {
                   <thead className="border-b bg-white dark:border-neutral-500 dark:bg-neutral-600">
                     <tr>
                       {TABLE_HEAD.map((head, index) => (
-                        <th
-                          key={index}
-                          scope="col"
-                          className="px-4 py-7"
-                        >
+                        <th key={index} scope="col" className="px-4 py-7">
                           {head}
                         </th>
-
-                        
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {filterProducts().map((product, index) => (
+                    {filteredItem.map((product, index) => (
                       <tr
-                        key={product.id}
+                        key={product._id}
                         className={
                           index % 2 === 0
-                            ? "border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600"
-                            : "border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700"
-                        }
-                      >
-                        <td className="whitespace-nowrap px-4 py-3 font-medium">
-                          {product.id}
-                        </td>
+                            ? 'border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600'
+                            : 'border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700'
+                        }>
+                        <td className="whitespace-nowrap px-4 py-3 font-medium">{product._id}</td>
                         <td className="whitespace-nowrap px-4 py-3">{product.name}</td>
-                        <td className="whitespace-nowrap px-4 py-3 h-2 w-2"><img src={product.image} alt="" /></td>
+                        <td className="whitespace-nowrap px-4 py-3 h-2 w-2">
+                          <img src={product.image} alt="" />
+                        </td>
                         <td className="whitespace-nowrap px-4 py-3">{product.description}</td>
-                        <td className="whitespace-nowrap px-4 py-3">{product.categories.join(', ')}</td>
-                        <td className="whitespace-nowrap px-4 py-3">{product.variants.join(', ')}</td>
+                        <td className="whitespace-nowrap px-4 py-3">
+                          {product.categories.map((category) => category.name).join(', ')}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3">
+                          {product.variants.join(', ')}
+                        </td>
                         <td className="whitespace-nowrap px-4 py-3">{product.sizes.join(', ')}</td>
                         <td className="whitespace-nowrap px-4 py-3">{product.price}</td>
 
                         <td>
-                          <span className="whitespace-nowrap px-4 py-3 cursor-pointer hover:text-[#530296]"
-                            onClick={() => openEditForm(product)}
-                          >
+                          <span
+                            className="whitespace-nowrap px-4 py-3 cursor-pointer hover:text-[#530296]"
+                            onClick={() => openEditForm(product)}>
                             Edit
                           </span>
                         </td>
                         <td>
+                          <ConfirmDialog
+                            visible={confirmDialogVisible}
+                            onHide={() => {
+                              setSelectedProductID(null) // Reset selectedUserId when the dialog is hidden
+                              setConfirmDialogVisible(false)
+                            }}
+                            message={`Are you sure you want to Delete this user?   ${selectedProductID}`}
+                            header="Confirmation"
+                            headerClassName="font-bold"
+                            acceptLabel="Yes"
+                            rejectLabel="No"
+                            acceptClassName="p-button-primary  bg-green-900 ml-4 mt-8 pl-10 pr-10"
+                            rejectClassName="p-button-secondary  bg-red-900 pl-10 pr-10"
+                            accept={() => handleDeleteProduct(selectedProductID!!)}
+                            className="bg-[#3d3d3d] p-10 rounded"
+                          />
                           <span
-                            className="whitespace-nowrap px-4 py-3 text-red-700 hover:text-red-300 cursor-pointer"
-                            onClick={() => dispatch(removeProduct({ productId: product.id }))}
-                          >
+                            className="whitespace-nowrap px-1 py-3 text-red-700 hover:text-red-300 cursor-pointer pr-10"
+                            onClick={() => showConfirmDialog(product._id)}>
                             <AiOutlineClose />
                           </span>
                         </td>
@@ -280,23 +251,22 @@ export default function AdminProduct() {
                 </table>
               </div>
             </div>
-            <EditProductForm
+            {showEditForm && selectedProduct&& (
+              <EditProductForm              
               selectedProduct={selectedProduct}
-              handleInputChange={handleInputChange}
-              handleArrayInputChange={handleArrayInputChange}
-              handleSubmit={handleSubmit}
-              handleClose={closeEditForm}
-            />
+                handleSubmit={handleSubmit}
+                handleClose={closeEditForm}
+              />
+            )}
           </div>
           {showNewProductForm && (
-          <ProductForm
-          handleClose={ closeNewProductForm}
-          initialProduct={initialProductState}
-            handleSubmit={handleAddProduct} // Handle the form submission to add a new product
-          />
-        )}
+            <ProductForm
+              handleClose={() => setShowNewProductForm(false)}
+              initialProduct={initialProductState}
+            />
+          )}
         </div>
       </div>
     </div>
-  );
+  )
 }
