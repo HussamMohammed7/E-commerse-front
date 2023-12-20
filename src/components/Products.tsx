@@ -27,12 +27,15 @@ export default function Products() {
 
   const [filteredItem, setFilteredItem] = useState<Product[]>([]);
   const [searchName, setSearchName] = useState('');
+  const [sort, setSort] = useState<'asc' | 'desc'>('asc'); // Added sorting order state
+  const [sortPrice, setSortPrice] = useState<'asc_price' | 'desc_price'>('asc_price'); // Added sorting order state
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch products based on the current pagination and search term
-        const action = await dispatch(getProductsByPageThunk({ ...pagination, searchName }));
+        const action = await dispatch(getProductsByPageThunk({ ...pagination, searchName,sort,sortPrice }));
 
         if (getProductsByPageThunk.fulfilled.match(action)) {
           const { perPage, page, totalPages, totalProduct, items } = action.payload;
@@ -53,7 +56,7 @@ export default function Products() {
      
     fetchData();
     console.log('searchName: ', searchName);
-  }, [dispatch, pagination.page, pagination.perPage, searchName]);
+  }, [dispatch, pagination.page, pagination.perPage, searchName,sort,sortPrice]);
 
   const handlePageChange = (newPage: number) => {
     setPagination((prevPagination) => ({
@@ -87,7 +90,12 @@ export default function Products() {
     setSearchName(e.target.value);
     console.log(e.target.value);
   };
-
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSort(e.target.value as 'asc' | 'desc');
+  };
+  const handleSortPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortPrice(e.target.value as 'asc_price' | 'desc_price');
+  };
   return (
     <div className="grid grid-cols-1 w-full">
       {products.isLoading && <h3>Loading products...</h3>}
@@ -98,11 +106,11 @@ export default function Products() {
             placeholder="Search products..."
             value={searchName}
             onChange={handleSearchChange}
-            className="border p-2 px-[500px] rounded text-left"
+            className="border p-2 px-[200px] rounded text-left"
           />
         </div>
         <div className="flex items-center">
-          <label className="mr-2">Products per page:</label>
+          <label className="mr-2 ">Products per page:</label>
           <select
             value={pagination.perPage}
             onChange={(e) =>
@@ -119,6 +127,28 @@ export default function Products() {
             <option value={50}>50</option>
           </select>
         </div>
+        <div className="flex items-center">
+          <label className="mr-2 ">Sort name By :</label>
+          <select
+            onChange={handleSortChange}
+            className="border p-2 mr-5 rounded pr-10"
+          >
+            <option value={"asc"}>asc</option>
+            <option value={"desc"}>desc</option>
+          
+          </select>
+        </div>
+        <div className="flex items-center">
+          <label className="mr-2 ">Sort Price By :</label>
+          <select
+            onChange={handleSortPriceChange}
+            className="border p-2 mr-5 rounded pr-10"
+          >
+            <option value={"asc_price"}>max</option>
+            <option value={"desc_price"}>min</option>
+          
+          </select>
+        </div>
       </nav>
       <div className="card grid gap-4 mt-20">
         <div className="mb-4">{/* Removed filter options */}</div>
@@ -130,11 +160,11 @@ export default function Products() {
           ))}
         </ul>
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center pb-10 ">
         <button
           onClick={handleFirstPage}
           disabled={pagination.page === 1}
-          className="mr-2 bg-gray-300 px-4 py-2 rounded"
+          className="mr-2 bg-gray-300 px-4 py-2 rounded bg-purple"
         >
           First
         </button>
@@ -145,7 +175,7 @@ export default function Products() {
         >
           Previous
         </button>
-        <span className="text-lg font-bold">
+        <span className="text-lg ">
           Page {pagination.page} of {pagination.totalPages}
         </span>
         <button

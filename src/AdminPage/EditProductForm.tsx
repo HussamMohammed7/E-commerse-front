@@ -3,7 +3,10 @@ import { AiOutlineClose } from 'react-icons/ai'
 import { Product, getProductOneThunk, updateProductThunk } from '../redux/slices/products/productSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../redux/store'
-import Select, { MultiValue } from 'react-select'
+import Select, { MultiValue , StylesConfig  } from 'react-select'
+import chroma from 'chroma-js';
+
+
 
 interface EditProductProps {
   selectedProduct: Product
@@ -24,11 +27,21 @@ export default function EditProductForm({
   }))
   console.log('default', defaultOptions)
 
-  const [selectedOption, setSelectedOption] =
-    useState<MultiValue<{ value: string; label: string }>>(defaultOptions)
-  const categoriesIds = selectedOption.map((category) => category.value)
-  console.log(categoriesIds)
+  const [selectedOption, setSelectedOption] =useState<MultiValue<{ value: string; label: string }>>(defaultOptions)
+  // const categoriesIds = selectedOption.map((category) => category.value)
 
+useEffect(() => {
+    const selectedCategories = selectedOption.map((category) => ({
+      _id: category.value,
+      name: category.label
+    }))
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      categories: selectedCategories
+    }))
+  }, [selectedOption])
+
+  
   const categories = useSelector((state: RootState) => state.category.items)
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -58,6 +71,7 @@ export default function EditProductForm({
 
     try {
       // Dispatch the updateProductThunk with the updated product
+      console.log("product categories",product.categories)
       await dispatch(updateProductThunk({ productId: product._id, updatedProduct: product }));
 
       // Call the existing handleSubmit function
@@ -156,7 +170,7 @@ export default function EditProductForm({
                 defaultValue={defaultOptions}
                 onChange={setSelectedOption}
                 options={options}
-                className="p-2 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus-ring-indigo-500 focus-border-indigo-500 text-sm"
+                className=""
               />
             </div>
             <div className="mb-4">

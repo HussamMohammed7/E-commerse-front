@@ -5,16 +5,6 @@ import { addToCart, removeFromCart, increaseQuantity, decreaseQuantity } from '.
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-type Product = {
-  id: number;
-  name: string;
-  image: string;
-  description: string;
-  price: number;
-  categories: number[];
-  variants: string[];
-  sizes: string[];
-};
 
 export default function Cart() {
   const state = useSelector((state: RootState) => state);
@@ -48,15 +38,16 @@ export default function Cart() {
   const dispatch = useDispatch();
 
   // To increase quantity
-  const handleIncreaseQuantity = (productId: number) => {
+  const handleIncreaseQuantity = (productId: string) => {
+    console.log("productId", productId)
     dispatch(increaseQuantity({ productId }));
   };
   // To decrease quantity
-  const handleDecreaseQuantity = (productId: number) => {
+  const handleDecreaseQuantity = (productId: string) => {
     dispatch(decreaseQuantity({ productId }));
   };
 
-  const handleRemove = (productId: number) => {
+  const handleRemove = (productId: string) => {
     dispatch(removeFromCart({ productId }));
   };
 
@@ -66,14 +57,14 @@ export default function Cart() {
     const quantity = item.quantity;
     totalPrice += productPrice * quantity;
   });
-
+ console.log(cartItems)
   return (
     <div className="h-screen bg-blackTheme pt-20 mt-9 ">
       <h1 className="mt-10 mb-10 text-center text-2xl font-bold">Cart Items</h1>
       {cartItems.length > 0 ? (
         <div className="mx-auto max-w-5xl justify-center px-6 xl:px-0 ml-[10rem] ">
           {cartItems.map((item) => (
-            <div key={item.product.id} className="rounded-lg md:w-2/3 mb-6">
+            <div key={item.product._id} className="rounded-lg md:w-2/3 mb-6">
               <div className="justify-between mb-6 rounded-lg bg-whiterBlack p-6 shadow-md sm:flex sm:justify-start border">
                 <img src={item.product.image} alt="product-image" className="w-full border rounded-lg sm:w-40" />
                 <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
@@ -86,7 +77,7 @@ export default function Cart() {
                       <div className="flex items-center border-white">
                         <span
                           className="cursor-pointer rounded-l bg-blackTheme py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
-                          onClick={() => handleDecreaseQuantity(item.product.id)}
+                          onClick={() => handleDecreaseQuantity(item.product._id)}
                         >
                           {' '}
                           -{' '}
@@ -98,7 +89,7 @@ export default function Cart() {
                         />
                         <span
                           className="cursor-pointer rounded-r bg-blackTheme py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
-                          onClick={() => handleIncreaseQuantity(item.product.id)}
+                          onClick={() => handleIncreaseQuantity(item.product._id)}
                         >
                           {' '}
                           +{' '}
@@ -109,7 +100,7 @@ export default function Cart() {
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
-                          onClick={() => handleRemove(item.product.id)}
+                          onClick={() => handleRemove(item.product._id)}
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"

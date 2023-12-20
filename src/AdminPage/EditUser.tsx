@@ -28,15 +28,33 @@ const EditUser: React.FC<EditUserProps> = ({ selectedIDUser, handleSubmit, handl
       })
     }
   }
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target
+  const handleSelectActive = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    const booleanValue = value === 'true' || value === 'false' ? value : (value === 'true') ? false : true
+
+
 
     setSelectedUser({
       ...selectedUser!,
-      [name]: value
-    })
+      [name]: booleanValue,
+    });
+    console.log(selectedUser?.isActive)
+  };
+  
+  
+  // ...
+  
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+  
+    setSelectedUser({
+      ...selectedUser!,
+      [name]: value,
+    });
     console.log(selectedUser?.role)
-  }
+
+  };
+  
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   console.log(selectedIDUser)
@@ -171,6 +189,26 @@ const EditUser: React.FC<EditUserProps> = ({ selectedIDUser, handleSubmit, handl
           </div>
 
         
+          <div className="mb-4">
+            <label htmlFor="isActive" className="block text-sm font-medium text-left p-2">
+              isActive
+            </label>
+            <div className="relative">
+              <select
+                id="isActive"
+                name="isActive"
+                value={selectedUser?.isActive.toString()}
+                onChange={handleSelectActive}
+                className="p-3 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option
+                  className="p-3 block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value="true">
+                  isActive
+                </option>
+                <option value="false"> notActive</option>
+              </select>
+            </div>
+          </div>
           <div className="mb-4">
             <label htmlFor="role" className="block text-sm font-medium text-left p-2">
               Role

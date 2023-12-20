@@ -20,6 +20,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = () => {
 
     dispatch(addToCart({ product, quantity: 1 }));
+    console.log("productID", product)
+
   };
   
 

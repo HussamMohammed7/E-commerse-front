@@ -51,15 +51,22 @@ export const getProductsByPageThunk = createAsyncThunk(
     totalProduct,
     totalPages,
     searchName,
+    sort,
+    sortPrice,
+
   }: {
     perPage: number
     page: number
     totalProduct: number
     totalPages: number
     searchName?:string 
+    sort?: 'asc' | 'desc'
+    sortPrice ?: 'asc_price' | 'desc_price'
+
+
   }) => {
     try {
-      const res = await api.get(`http://localhost:5050/api/products?page=${page}&perPage=${perPage}&searchName=${searchName || ''}`);
+      const res = await api.get(`http://localhost:5050/api/products?page=${page}&perPage=${perPage}&searchName=${searchName || ''}&sort=${sort || ''}&sortPrice=${sortPrice || ''}`);
 
       console.log('res.data from getProductsThunk', res.data)
 

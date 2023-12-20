@@ -1,29 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  productsRequest,
-  productsSuccess,
-  removeProduct,
-} from '../redux/slices/products/productSlice';
+
 import { AppDispatch, RootState } from '../redux/store';
 import api from '../api';
 import axios from 'axios';
 import ProductCard from './ProductCard';
 import { useParams } from 'react-router-dom';
 import { addToCart } from '../redux/slices/products/cartSlice';
+import { Product } from '../redux/slices/products/productSlice';
 
 
 
-export type Product = {
-  _id: number
-  name: string
-  image: string[]
-  description: string
-  price: number
-  categories: number[]
-  variants: string[]
-  sizes: string[]
-}
+
 
 
 export default function ProductDetail(   ) {

@@ -16,12 +16,10 @@ import { Link } from 'react-router-dom'
 import { ProductForm } from './AddProductForm'
 import { Product } from '../redux/slices/products/productSlice'
 import { ConfirmDialog } from 'primereact/confirmdialog'
+import { Category } from '../redux/slices/Category/CategorySlice'
 import { getCategoriesThunk } from '../redux/slices/Category/CategorySlice'
 
-interface Category {
-  id: number
-  name: string
-}
+
 
 export default function AdminProduct() {
   const initialProductState: Product = {
@@ -63,7 +61,6 @@ export default function AdminProduct() {
   const dispatch = useDispatch<AppDispatch>()
   const state = useSelector((state: RootState) => state)
   const products = state.products.items
-  console.log('products',products)
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [selectedProductID, setSelectedProductID] = useState<string | null>(null)
@@ -76,12 +73,14 @@ export default function AdminProduct() {
   const [page, setPage] = useState(1)
   const [searchName, setSearchName] = useState('')
   const [filteredItem, setFilteredItem] = useState<Product[]>(products);
-  
+  const categories = useSelector((state : RootState) => state.category.items);
+
+
+
   useEffect(() => {
-    setFilteredItem(products)
-  }, [products])
-  useEffect(() => {
+    dispatch(getCategoriesThunk())
     const fetchData = async () => {
+      
       try {
         // Fetch products based on the current pagination and search term
         const action = await dispatch(getProductsByPageThunk({ ...pagination, searchName }));
@@ -105,8 +104,12 @@ export default function AdminProduct() {
      if(products.length === 0) {
       fetchData();
      }
-    console.log('searchName: ', searchName);
   }, [dispatch, pagination.page, pagination.perPage, searchName]);
+
+  
+
+  
+
 
   const handleSubmit = () => {
     closeEditForm()
@@ -123,8 +126,7 @@ export default function AdminProduct() {
   }
 
   const [showEditForm, setShowEditForm] = useState(false)
-  const [categories, setCategories] = useState<Category[]>([])
-  const [selectedCategory, setSelectedCategory] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>()
   const showConfirmDialog = (productId: string) => {
     setConfirmDialogVisible(true)
     setSelectedProductID(productId)
@@ -133,11 +135,12 @@ export default function AdminProduct() {
     dispatch(getCategoriesThunk());
   }, [dispatch]);
 
-  const handleCategoryChange = (category: number) => {
-    setSelectedCategory(category)
+  const handleCategoryChange = (categoryId: string) => {
+    const selectedCategory = categories?.find(category => category._id === categoryId) || null;
+    setSelectedCategory(selectedCategory);
   }
+  
   const handleDeleteProduct = (id: string) => {
-    console.log(id)
     dispatch(deleteProductThunk(id))
   }
 
@@ -146,7 +149,7 @@ export default function AdminProduct() {
       <AdminSideBar />
       <div className="flex flex-col mt-20 h-full w-full">
         <div className="text-left ">
-          <label className="mr-2">Products per page:</label>
+          <label className="mr-2 pl-4">Products per page:</label>
           <select
             value={perPage}
             onChange={(e) => setPerPage(Number(e.target.value))}
@@ -162,10 +165,10 @@ export default function AdminProduct() {
           <select
             id="categorySelect"
             className="p-4 pr-[30rem] mt-5 ml-10"
-            onChange={(e) => handleCategoryChange(Number(e.target.value))}>
+            onChange={(e) => handleCategoryChange((e.target.value))}>
             <option value={0}>All</option>
-            {categories.map((categoryItem) => (
-              <option key={categoryItem.id} value={categoryItem.id}>
+            {categories?.map((categoryItem) => (
+              <option key={categoryItem._id} value={categoryItem._id}>
                 {categoryItem.name}
               </option>
             ))}
