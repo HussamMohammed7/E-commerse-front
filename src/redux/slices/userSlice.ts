@@ -23,14 +23,16 @@ export type User = {
   isActive: boolean
   phone: string
   address:Address[]
+  
   orders: Order[]
 }
 interface Address {
+  _id: string
   name: string
-  street: string
+  address: string
   city: string
   country: string
-  phone: string
+  phone: number
 
 }
 interface Order {
@@ -92,6 +94,42 @@ export const fetchUserByTokenThunk = createAsyncThunk(
       if (error instanceof AxiosError) {
         return rejectWithValue(error);
       }
+    }
+  }
+);
+export const addAddressThunk = createAsyncThunk(
+  'add/address',
+  async ({ userId, address }: { userId: string; address: {
+    name: string
+    address: string
+    city: string
+    country: string
+    phone: number
+  } }, { dispatch, rejectWithValue })  => {
+    try {
+      // Assuming your API endpoint for adding an address is a POST request
+      const response = await api.post(`api/users/${userId}/address`, address);
+
+      const updatedAddressFromServer = response.data;
+
+      return updatedAddressFromServer;
+    } catch (error) {
+      // You can handle errors here and reject with a value
+      return rejectWithValue(error);
+    }
+  }
+);
+export const deleteAddressThunk = createAsyncThunk(
+  'users/delete/delete',
+  async ({ userId, addressId }: { userId: string; addressId: string  }, { dispatch, rejectWithValue }) => {
+    try {
+      // Assuming the correct URL structure is `api/users/${userId}/addresses/${addressId}`
+      await api.delete(`api/users/${userId}/address/${addressId}`);
+      return userId;
+    } catch (error) {
+      console.log('👀 ', error);
+      // Handle the error or reject with a value
+      return rejectWithValue(error);
     }
   }
 );
@@ -205,10 +243,49 @@ export const userSlice = createSlice({
       state.users = updatedUsers
       return state
     })
+    builder.addCase(addAddressThunk.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+      
+
+    });
+
+    // Handle the fulfilled state
+    builder.addCase(addAddressThunk.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+      return state
+
+    });
+
+    // Handle the rejected state
+    builder.addCase(addAddressThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload ? String(action.payload) : 'Unknown error';
+      return state
+
+    });
 
 
+    builder.addCase(deleteAddressThunk.fulfilled, (state, action) => {
+      const userId = action.payload;
 
+      // Find the user in the state
+      const userIndex = state.users.findIndex((u) => u._id === userId);
 
+      if (userIndex !== -1) {
+        // Clone the user to avoid mutating state directly
+        const updatedUser = { ...state.users[userIndex] };
+
+        // Assume each user has an 'address' property which is an array of addresses
+        updatedUser.address = updatedUser.address.filter((addr) => addr._id !== action.meta.arg.addressId);
+
+        // Update the state with the modified user
+        state.users[userIndex] = updatedUser;
+      }
+      return state
+    });
+  
 
 
   }

@@ -16,7 +16,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const dispatch = useDispatch();
-
+ 
   const handleAddToCart = () => {
 
     dispatch(addToCart({ product, quantity: 1 }));
@@ -24,7 +24,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   };
   
-
   return (
     <div className=" p-6  " > {/* Set width to 1/3 for three cards in a row and add padding */}
       <div className="h-[32rem] mb-[4rem] bg-whiterBlack shadow-lg p-4 rounded-md border-[#20124d] border-2" > {/* Card container */}

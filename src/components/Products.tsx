@@ -7,6 +7,7 @@ import {
 import { AppDispatch, RootState } from '../redux/store';
 import { Product } from '../redux/slices/products/productSlice';
 import ProductCard from './ProductCard';
+import { getCategoriesThunk } from '../redux/slices/Category/CategorySlice';
 
 interface Category {
   id: number;
@@ -29,13 +30,18 @@ export default function Products() {
   const [searchName, setSearchName] = useState('');
   const [sort, setSort] = useState<'asc' | 'desc'>('asc'); // Added sorting order state
   const [sortPrice, setSortPrice] = useState<'asc_price' | 'desc_price'>('asc_price'); // Added sorting order state
+  const categories = state.category.items;
+  const [category, setCategory] = useState<string>(''); // State variable for category
+
 
 
   useEffect(() => {
     const fetchData = async () => {
+      dispatch(getCategoriesThunk())
+
       try {
         // Fetch products based on the current pagination and search term
-        const action = await dispatch(getProductsByPageThunk({ ...pagination, searchName,sort,sortPrice }));
+        const action = await dispatch(getProductsByPageThunk({ ...pagination, searchName,sort,sortPrice,category }));
 
         if (getProductsByPageThunk.fulfilled.match(action)) {
           const { perPage, page, totalPages, totalProduct, items } = action.payload;
@@ -56,7 +62,7 @@ export default function Products() {
      
     fetchData();
     console.log('searchName: ', searchName);
-  }, [dispatch, pagination.page, pagination.perPage, searchName,sort,sortPrice]);
+  }, [dispatch, pagination.page, pagination.perPage, searchName,sort,sortPrice,category]);
 
   const handlePageChange = (newPage: number) => {
     setPagination((prevPagination) => ({
@@ -96,6 +102,11 @@ export default function Products() {
   const handleSortPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortPrice(e.target.value as 'asc_price' | 'desc_price');
   };
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCategory(e.target.value);
+  };
+
+  console.log(category)
   return (
     <div className="grid grid-cols-1 w-full">
       {products.isLoading && <h3>Loading products...</h3>}
@@ -106,8 +117,24 @@ export default function Products() {
             placeholder="Search products..."
             value={searchName}
             onChange={handleSearchChange}
-            className="border p-2 px-[200px] rounded text-left"
+            className="border  p-2 px-[100px] rounded text-left"
           />
+        </div>
+        <div className="flex items-center">
+          <label className="mr-2 ">Categories :</label>
+          <select
+            onChange={handleCategoryChange}
+            value={category}
+            className="border p-2 mr-5 rounded pr-10"
+          >
+            <option value="">All</option>
+            {categories?.map((categoryItem) => (
+              <option key={categoryItem._id} value={categoryItem._id}>
+                {categoryItem.name}
+                
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex items-center">
           <label className="mr-2 ">Products per page:</label>
@@ -164,14 +191,14 @@ export default function Products() {
         <button
           onClick={handleFirstPage}
           disabled={pagination.page === 1}
-          className="mr-2 bg-gray-300 px-4 py-2 rounded bg-purple"
+          className="mr-2 bg-gray-300 px-4 py-2 rounded bg-purple cursor-pointer"
         >
           First
         </button>
         <button
           onClick={handlePrevPage}
           disabled={pagination.page === 1}
-          className="mr-2 bg-gray-300 px-4 py-2 rounded"
+          className="mr-2 bg-gray-300 px-4 py-2 rounded bg-purple cursor-pointer"
         >
           Previous
         </button>
@@ -181,14 +208,14 @@ export default function Products() {
         <button
           onClick={handleNextPage}
           disabled={pagination.page === pagination.totalPages}
-          className="ml-2 bg-gray-300 px-4 py-2 rounded"
+          className="ml-2 bg-gray-300 px-4 py-2 rounded bg-purple cursor-pointer"
         >
           Next
         </button>
         <button
           onClick={handleLastPage}
           disabled={pagination.page === pagination.totalPages}
-          className="ml-2 bg-gray-300 px-4 py-2 rounded"
+          className="ml-2 bg-gray-300 px-4 py-2 rounded bg-purple cursor-pointer"
         >
           Last
         </button>

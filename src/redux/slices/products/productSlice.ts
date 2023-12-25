@@ -53,6 +53,7 @@ export const getProductsByPageThunk = createAsyncThunk(
     searchName,
     sort,
     sortPrice,
+    category,
 
   }: {
     perPage: number
@@ -62,11 +63,12 @@ export const getProductsByPageThunk = createAsyncThunk(
     searchName?:string 
     sort?: 'asc' | 'desc'
     sortPrice ?: 'asc_price' | 'desc_price'
+    category?: string
 
 
   }) => {
     try {
-      const res = await api.get(`http://localhost:5050/api/products?page=${page}&perPage=${perPage}&searchName=${searchName || ''}&sort=${sort || ''}&sortPrice=${sortPrice || ''}`);
+      const res = await api.get(`http://localhost:5050/api/products?page=${page}&perPage=${perPage}&searchName=${searchName || ''}&sort=${sort || ''}&sortPrice=${sortPrice || '' }&category=${category || ''}`);
 
       console.log('res.data from getProductsThunk', res.data)
 
@@ -216,9 +218,6 @@ export const productsSlice = createSlice({
       })
       state.items = updatedItems;
       return state 
-      
-
-    
     });
 
     builder.addCase(updateProductThunk.rejected, (state, action) => {

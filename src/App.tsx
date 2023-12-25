@@ -18,6 +18,8 @@ import ProfileOrder from './Profile/ProfileOrder'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import AdminCategory from './AdminPage/AdminCategory'
+import ForgotPassword from './Login&Register/ForgotPassword'
+import ResetEmail from './Login&Register/ResetEmail'
 
 function App() {
   return (
@@ -55,6 +57,10 @@ function App() {
         
 
         <Route path="products/product-detail/:productId" element={<ProductDetail />} />
+        <Route path="forgot-password/:forgotPasswordToken" element={<ForgotPassword />} />
+        <Route path="reset-email/" element={<ResetEmail />} />
+
+
 
         
       </Routes>

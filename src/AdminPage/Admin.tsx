@@ -11,28 +11,43 @@ import { RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import {  useNavigate } from 'react-router-dom';
 import { getDecodedTokenFromStorage } from '../utils/token';
+import { toast } from 'react-toastify';
 
 
 
 export default function Admin() {
-  const navigate = useNavigate()
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state);
   const user = state.user.user;  
   console.log(user);
   console.log('admin page role:', user?.role);
 
-  useEffect(() => {
+  const navigate = useNavigate();
+  console.log("user",user)
+  
 
-    const decodedUser = getDecodedTokenFromStorage(); // Retrieve decoded user from storage
-    console.log('Decoded User:', decodedUser);
-    console.log('admin page role:', user?.role);
-    if (user == null || user.role !== 'admin') {
-      console.log('Logging in as:', user);
-      navigate('/');
-    }
-  }, [user, navigate]);
+  const userToken = getDecodedTokenFromStorage();
+  const role = userToken?.role;
 
+ useEffect(() => {
+
+  if(!userToken && role != 'admin') {
+    // Handle case when user is not logged in
+    toast.error("You don't have permission ", {
+      position: 'top-right',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark'
+    })
+
+    navigate('/login');
+
+ }
+},  [navigate]);
   
 
   return(

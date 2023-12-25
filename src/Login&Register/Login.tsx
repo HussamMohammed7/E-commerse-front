@@ -134,7 +134,7 @@ export default function Login() {
                 onChange={handleInputChange}
               />
             </div>
-            <Link to="/forgot-password" className="text-xs text-purple-600 hover:underline">
+            <Link to="/reset-email" className="text-xs text-purple-600 hover:underline">
               Forget Password?
             </Link>
             <div className="mt-6">
