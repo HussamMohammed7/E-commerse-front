@@ -40,7 +40,7 @@ export default function Register() {
     console.log(user);
     try {
       // Make a request to register the user
-      const res = await api.post('http://localhost:5050/api/users/register', user);
+      const res = await api.post('/api/users/register', user);
 
       console.log('User registered successfully:', res.data);
 

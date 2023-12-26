@@ -19,7 +19,7 @@ const initialCategoryState: CategoryState = {
 };
 export const getCategoriesThunk = createAsyncThunk('categories/get', async () => {
   try {
-    const res = await api.get('api/categories');
+    const res = await api.get('/api/categories');
     return res.data.categories;
   } catch (error) {
     console.error('getCategoriesThunk error:', error);
@@ -29,7 +29,7 @@ export const getCategoriesThunk = createAsyncThunk('categories/get', async () =>
 
 export const addCategoryThunk = createAsyncThunk('categories/add', async (category: Category) => {
   try {
-    const res = await api.post('http://localhost:5050/api/categories', category);
+    const res = await api.post('/api/categories', category);
     return res.data.category;
   } catch (error) {
     console.error('addCategoryThunk error:', error);
@@ -39,7 +39,7 @@ export const addCategoryThunk = createAsyncThunk('categories/add', async (catego
 
 export const deleteCategoryThunk = createAsyncThunk('categories/delete', async (categoryId: string) => {
   try {
-    await api.delete(`api/categories/${categoryId}`);
+    await api.delete(`/api/categories/${categoryId}`);
     return categoryId;
   } catch (error) {
     console.error('deleteCategoryThunk error:', error);

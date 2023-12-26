@@ -58,7 +58,7 @@ export default function ForgotPassword() {
 
     try {
       const res = await api.post(
-        'http://localhost:5050/api/users/reset-password',
+        '/api/users/reset-password',
         user
       );
 

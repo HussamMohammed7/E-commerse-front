@@ -60,7 +60,7 @@ export const loginThunk = createAsyncThunk(
   // Declare the type your function argument here:
   async (userLogin: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const res = await api.post(`http://localhost:5050/api/users/login`, userLogin)
+      const res = await api.post(`/api/users/login`, userLogin)
       // Inferred return type: Promise<MyData>
       console.log(res.data)
       return res.data
@@ -82,7 +82,7 @@ export const fetchUserByTokenThunk = createAsyncThunk(
         const decodedUser = getDecodedTokenFromStorage();
         console.log('Decoded User: id', decodedUser?._id);
 
-        const res = await api.get(`http://localhost:5050/api/users/${decodedUser?._id}`);
+        const res = await api.get(`/api/users/${decodedUser?._id}`);
         console.log('res.data from fetchUserByToken', res.data);
 
         return res.data;
@@ -108,7 +108,7 @@ export const addAddressThunk = createAsyncThunk(
   } }, { dispatch, rejectWithValue })  => {
     try {
       // Assuming your API endpoint for adding an address is a POST request
-      const response = await api.post(`api/users/${userId}/address`, address);
+      const response = await api.post(`/api/users/${userId}/address`, address);
 
       const updatedAddressFromServer = response.data.user;
 console.log(updatedAddressFromServer)
@@ -123,8 +123,8 @@ export const deleteAddressThunk = createAsyncThunk(
   'users/delete/delete',
   async ({ userId, addressId }: { userId: string; addressId: string  }, { dispatch, rejectWithValue }) => {
     try {
-      // Assuming the correct URL structure is `api/users/${userId}/addresses/${addressId}`
-      await api.delete(`api/users/${userId}/address/${addressId}`);
+      // Assuming the correct URL structure is `/api/users/${userId}/addresses/${addressId}`
+      await api.delete(`/api/users/${userId}/address/${addressId}`);
       return addressId;
     } catch (error) {
       console.log('👀 ', error);
@@ -138,7 +138,7 @@ export const getUserOneThunk = createAsyncThunk(
   // Declare the type your function argument here:
   async (userId: string, { rejectWithValue }) => {
     try {
-      const res = await api.get(`http://localhost:5050/api/users/${userId}`)
+      const res = await api.get(`/api/users/${userId}`)
       // Inferred return type: Promise<MyData>
       console.log("res.data from getUserOne",res.data)
       
@@ -152,7 +152,7 @@ export const getUserOneThunk = createAsyncThunk(
 )
 export const deleteUserThunk = createAsyncThunk('users/delete', async (userId: string) => {
   try {
-    await api.delete(`api/users/${userId}`)
+    await api.delete(`/api/users/${userId}`)
     return userId
   } catch (error) {
     console.log('👀 ', error)

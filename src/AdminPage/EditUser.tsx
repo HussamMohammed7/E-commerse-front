@@ -61,7 +61,7 @@ const EditUser: React.FC<EditUserProps> = ({ selectedIDUser, handleSubmit, handl
   useEffect(() => {
     const handleGetUser = async () => {
       try {
-        const res = await api.get(`http://localhost:5050/api/users/${selectedIDUser}`)
+        const res = await api.get(`/api/users/${selectedIDUser}`)
         setSelectedUser(res.data)
       } catch (error) {
         console.error('Error fetching user data:', error)
@@ -79,7 +79,7 @@ const EditUser: React.FC<EditUserProps> = ({ selectedIDUser, handleSubmit, handl
 
   const updateUserRequest = async (id: string, user: User) => {
     try {
-      const res = await api.put(`http://localhost:5050/api/users/${id}`, user)
+      const res = await api.put(`/api/users/${id}`, user)
       console.log('User updated successfully:', res.data)
       dispatch(updateUser({ userId: id, updatedUser: res.data.user }))
 

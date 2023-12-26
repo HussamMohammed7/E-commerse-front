@@ -31,7 +31,7 @@ export const getProductOneThunk = createAsyncThunk(
   // Declare the type your function argument here:
   async (productId: string, { rejectWithValue }) => {
     try {
-      const res = await api.get(`http://localhost:5050/api/products/${productId}`)
+      const res = await api.get(`/api/products/${productId}`)
       // Inferred return type: Promise<MyData>
       console.log('res.data from getProductOne', res.data)
 
@@ -68,7 +68,7 @@ export const getProductsByPageThunk = createAsyncThunk(
 
   }) => {
     try {
-      const res = await api.get(`http://localhost:5050/api/products?page=${page}&perPage=${perPage}&searchName=${searchName || ''}&sort=${sort || ''}&sortPrice=${sortPrice || '' }&category=${category || ''}`);
+      const res = await api.get(`/api/products?page=${page}&perPage=${perPage}&searchName=${searchName || ''}&sort=${sort || ''}&sortPrice=${sortPrice || '' }&category=${category || ''}`);
 
       console.log('res.data from getProductsThunk', res.data)
 
@@ -90,7 +90,7 @@ export const updateProductThunk = createAsyncThunk(
   async ({ productId, updatedProduct }: { productId: string; updatedProduct: Product }, { dispatch, rejectWithValue }) => {
     try {
       // Make your API call to update the product
-      const response = await api.put(`api/products/${productId}`, updatedProduct);
+      const response = await api.put(`/api/products/${productId}`, updatedProduct);
 
       // Handle the response as needed
       const updatedProductFromServer = response.data; // Adjust this based on your API response
@@ -119,7 +119,7 @@ export const getProductsThunk = createAsyncThunk(
     totalPages: number
   }) => {
     try {
-      const res = await api.get('http://localhost:5050/api/products')
+      const res = await api.get('/api/products')
 
       console.log('res.data from getProductsThunk', res.data)
 
@@ -140,7 +140,7 @@ export const deleteProductThunk = createAsyncThunk('products/delete', async (pro
   try {
     console.log('👀 ', productId)
 
-    await api.delete(`api/products/${productId}`)
+    await api.delete(`/api/products/${productId}`)
     return productId
   } catch (error) {
     console.log('👀 ', error)
@@ -151,7 +151,7 @@ export const addProductThunk = createAsyncThunk(
   async (newProduct: Product) => {
     try {
       // Assuming you have an API endpoint to add a product
-      const res = await api.post('api/products', newProduct)
+      const res = await api.post('/api/products', newProduct)
 
       // Return the newly added product from the response
       return res.data.product

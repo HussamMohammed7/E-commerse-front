@@ -43,7 +43,7 @@ export const getOrdersThunk = createAsyncThunk(
     totalPages: number
   }) => {
     try {
-      const res = await api.get('http://localhost:5050/api/orders')
+      const res = await api.get('/api/orders')
 
       console.log('res.data from getProductsThunk', res.data)
 
@@ -66,7 +66,7 @@ export const addOrderThunk = createAsyncThunk(
     try {
       // Assuming you have an API endpoint to add an order
       console.log(newOrder)
-      const res = await api.post('api/orders', newOrder);
+      const res = await api.post('/api/orders', newOrder);
 
       // Return the newly added order from the response
       return res.data.order;

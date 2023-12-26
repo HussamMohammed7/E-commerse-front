@@ -43,7 +43,7 @@ export default function AdminUsers() {
   const handleGetUsers = async () => {
     dispatch(usersRequest())
 
-    const res = await api.get('http://localhost:5050/api/users')
+    const res = await api.get('/api/users')
     console.log(res.data)
     dispatch(usersSuccess(res.data.users))
   }

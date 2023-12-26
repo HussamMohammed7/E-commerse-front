@@ -32,7 +32,7 @@ export default function ResetEmail() {
     };
 
     try {
-      const res = await api.post('http://localhost:5050/api/users/forgot-password', user);
+      const res = await api.post('/api/users/forgot-password', user);
 
       console.log('email reset successfully:', res.data);
 
