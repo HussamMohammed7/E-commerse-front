@@ -19,7 +19,6 @@ export default function ProfilePayment() {
             <span className="flex-grow ">type:</span>
             <span className="flex-grow">Ending in </span>
             <span className="flex-grow">Expiry:</span>
-
             <span className="ml-10 cursor-pointer">
 
               Delete card

@@ -40,7 +40,7 @@ export default function NavBar() {
       />
       <nav className="container mx-auto flex justify-between items-center mt-3 mb-3">
         <span className="text-3xl font-bold">
-          <img src="src\components\cable.png" alt="" className="h-6 w-8 inline relative mr-1" />{' '}
+          <img src="public\cable.png" alt="" className="h-6 w-8 inline relative mr-1" />{' '}
           Cable master
         </span>
         <ul className="flex space-x-4">
@@ -94,7 +94,7 @@ export default function NavBar() {
             <li>
               <Link to="cart" className="hover:text-blue-300">
                 <img
-                  src="src\components\icons8-cart-100.png "
+                  src="public\icons8-cart-100.png "
                   alt=""
                   className="h-6 w-8 ml-[5rem] mr-[2rem]"
                 />
