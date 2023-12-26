@@ -91,12 +91,18 @@ export default function Register() {
               />
             </div>
           </div>
+          <div >
+
           <PhoneInput
+           
             country={'sa'} // Default country
+            
             value={formData.phoneNumber}
             onChange={handlePhoneNumberChange}
+            
             inputClass="block w-full px-4 py-2 mt-2 text-purple-100 border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
           />
+          </div>
           <div className="mb-2">
             <label className="block text-sm font-semibold mt-2">Email</label>
             <input

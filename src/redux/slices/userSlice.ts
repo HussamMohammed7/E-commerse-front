@@ -110,8 +110,8 @@ export const addAddressThunk = createAsyncThunk(
       // Assuming your API endpoint for adding an address is a POST request
       const response = await api.post(`api/users/${userId}/address`, address);
 
-      const updatedAddressFromServer = response.data;
-
+      const updatedAddressFromServer = response.data.user;
+console.log(updatedAddressFromServer)
       return updatedAddressFromServer;
     } catch (error) {
       // You can handle errors here and reject with a value
@@ -125,7 +125,7 @@ export const deleteAddressThunk = createAsyncThunk(
     try {
       // Assuming the correct URL structure is `api/users/${userId}/addresses/${addressId}`
       await api.delete(`api/users/${userId}/address/${addressId}`);
-      return userId;
+      return addressId;
     } catch (error) {
       console.log('👀 ', error);
       // Handle the error or reject with a value
@@ -268,21 +268,17 @@ export const userSlice = createSlice({
 
 
     builder.addCase(deleteAddressThunk.fulfilled, (state, action) => {
-      const userId = action.payload;
+      const addressId = action.payload;
+      if(state.user){
 
-      // Find the user in the state
-      const userIndex = state.users.findIndex((u) => u._id === userId);
-
-      if (userIndex !== -1) {
-        // Clone the user to avoid mutating state directly
-        const updatedUser = { ...state.users[userIndex] };
-
-        // Assume each user has an 'address' property which is an array of addresses
-        updatedUser.address = updatedUser.address.filter((addr) => addr._id !== action.meta.arg.addressId);
-
-        // Update the state with the modified user
-        state.users[userIndex] = updatedUser;
+      
+      const updatedAddresses = state.user?.address.filter(address => address._id !== addressId)
+      const updatedUser = {
+        ...state.user,
+        address: updatedAddresses
       }
+      state.user = updatedUser
+    }
       return state
     });
   

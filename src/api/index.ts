@@ -1,11 +1,7 @@
 import axios from 'axios'
 import { getTokenFromStorage } from '../utils/token'
 
-const isDevelopment = import.meta.env.MODE === 'development'
-let baseURL = 'http://localhost:5050/'
-
-
-const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:5050'
+const BASE_URL = import.meta.env.VITE_BACKEND_ORIGIN || 'http://localhost:5050'
 
 const api = axios.create({
   baseURL : BASE_URL
