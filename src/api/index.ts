@@ -4,13 +4,11 @@ import { getTokenFromStorage } from '../utils/token'
 const isDevelopment = import.meta.env.MODE === 'development'
 let baseURL = 'http://localhost:5050/'
 
-if (!isDevelopment) {
-  // Update this later when you have a working backend server
-  baseURL = 'http://localhost:3000/'
-}
+
+const BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:5050'
 
 const api = axios.create({
-  baseURL
+  baseURL : BASE_URL
 })
 const token = getTokenFromStorage()
 if (token) {

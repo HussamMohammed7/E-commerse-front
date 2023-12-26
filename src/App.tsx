@@ -12,7 +12,6 @@ import AdminUsers from './AdminPage/AdminUsers'
 import Login from './Login&Register/Login'
 import Register from './Login&Register/Register'
 import AdminOrder from './AdminPage/AdminOrder'
-import { NewProductWrapper } from './components/NewProductWrapper'
 import Profile from './Profile/Profile'
 import ProfileOrder from './Profile/ProfileOrder'
 import { ToastContainer } from 'react-toastify'
@@ -48,7 +47,6 @@ function App() {
 
         <Route path="admin" element={ <Admin/> } />
         <Route path="admin/admin-product" element={ <AdminProduct/> } />
-        <Route path="admin/admin-product/new-product" element={ <NewProductWrapper/> } />
 
         <Route path="admin/admin-users" element={ <AdminUsers/> } />
         <Route path="admin/admin-order" element={ <AdminOrder/> } />
